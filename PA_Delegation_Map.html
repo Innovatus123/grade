@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PA Delegation Index - GBCA Government Relations &amp; Advocacy Data Engine</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Public+Sans:ital,wght@0,400;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+--vellum:#E9E5DC;
+--vellum-2:#DFDACE;
+--panel:#FBFAF7;
+--rule:#C4BEB0;
+--rule-soft:#D9D3C6;
+--ink:#14202A;
+--ink-2:#3E4C57;
+--ink-3:#6B7680;
+--dem:#2C5D9B;
+--rep:#A63D2E;
+--vac:#8E877A;
+--accent:#1D6E60;
+--accent-soft:rgba(29,110,96,.10);
+--warn:#B0741A;
+--sans:'Public Sans',ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+--disp:'Archivo',var(--sans);
+--mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+background:var(--vellum);
+color:var(--ink);
+font-family:var(--sans);
+font-size:15px;
+line-height:1.5;
+-webkit-font-smoothing:antialiased;
+}
+a{color:var(--accent)}
+::selection{background:var(--accent-soft)}
+.masthead{
+border-bottom:1px solid var(--ink);
+background:var(--vellum);
+position:sticky;top:0;z-index:40;
+}
+.masthead-in{
+max-width:1560px;margin:0 auto;padding:14px 24px;
+display:flex;align-items:flex-end;justify-content:space-between;gap:20px;flex-wrap:wrap;
+}
+.wordmark{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.wordmark .org{
+font-family:var(--disp);font-weight:700;font-size:13px;
+letter-spacing:.20em;text-transform:uppercase;color:var(--ink);
+}
+.wordmark .div{width:1px;height:14px;background:var(--rule);align-self:center}
+.wordmark .sub{
+font-family:var(--mono);font-size:11.5px;letter-spacing:.10em;
+text-transform:uppercase;color:var(--ink-3);
+}
+.stamp{
+font-family:var(--mono);font-size:11px;letter-spacing:.06em;color:var(--ink-2);
+text-align:right;line-height:1.55;
+}
+@media (max-width:760px){
+.masthead{position:static}
+.masthead-in{padding:11px 16px}
+.wordmark .org{font-size:11.5px;letter-spacing:.14em}
+.wordmark .div{display:none}
+.stamp{text-align:left;font-size:10px}
+.shell{padding:16px}
+.plate{padding:6px}
+.plate-eyebrow{position:static;display:block;padding:8px 10px 6px;line-height:1.4}
+footer{padding:6px 16px 32px}
+}
+.stamp b{color:var(--ink);font-weight:600}
+.shell{
+max-width:1560px;margin:0 auto;padding:24px;
+display:grid;grid-template-columns:minmax(0,1fr) 372px;
+grid-template-rows:auto 1fr;gap:24px 24px;align-items:start;
+}
+.col-map{grid-column:1;grid-row:1}
+.rail{grid-column:2;grid-row:1 / span 2}
+.col-roster{grid-column:1;grid-row:2;min-width:0}
+@media (max-width:1080px){
+.shell{grid-template-columns:minmax(0,1fr);grid-template-rows:none;gap:20px}
+.col-map,.rail,.col-roster{grid-column:1;grid-row:auto}
+}
+.plate{
+position:relative;background:var(--panel);
+border:1px solid var(--ink);
+padding:10px;
+}
+.plate-inner{border:1px solid var(--rule);position:relative}
+.plate-eyebrow{
+position:absolute;top:10px;left:14px;z-index:2;
+font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;
+text-transform:uppercase;color:var(--ink-3);pointer-events:none;
+}
+svg.map{display:block;width:100%;height:auto;touch-action:manipulation}
+svg.map path.county{
+stroke:#F7F5F0;stroke-width:.9;cursor:pointer;
+transition:filter .12s ease, stroke .12s ease;
+outline:none;
+}
+svg.map path.county:hover{filter:brightness(1.08) saturate(1.25)}
+svg.map path.county.sel{stroke:var(--ink);stroke-width:2.4}
+svg.map path.county:focus-visible{stroke:var(--accent);stroke-width:3}
+svg.map path.county.dim{opacity:.28}
+svg.map text.lbl{
+font-family:var(--mono);font-size:9px;fill:var(--ink);
+text-anchor:middle;pointer-events:none;paint-order:stroke;
+stroke:rgba(251,250,247,.85);stroke-width:2.4px;
+}
+.titleblock{
+border-top:1px solid var(--ink);
+background:var(--panel);
+font-family:var(--mono);font-size:10px;line-height:1.35;color:var(--ink-2);
+}
+.tb-row{display:grid;grid-template-columns:1fr auto;border-bottom:1px solid var(--rule-soft)}
+.tb-row:last-child{border-bottom:none}
+.tb-cell{padding:6px 10px}
+.tb-cell + .tb-cell{border-left:1px solid var(--rule-soft);text-align:right;min-width:96px}
+.tb-k{font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);display:block}
+.tb-v{color:var(--ink);font-weight:500;letter-spacing:.02em}
+.tb-counts{display:flex;gap:0}
+.tb-counts div{flex:1;padding:6px 8px;border-right:1px solid var(--rule-soft);text-align:center}
+.tb-counts div:last-child{border-right:none}
+.tb-counts b{display:block;font-size:13px;color:var(--ink);font-weight:600}
+.tb-counts span{font-size:8.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3)}
+@media (max-width:640px){.tb-row{grid-template-columns:1fr}.tb-cell + .tb-cell{border-left:none;border-top:1px solid var(--rule-soft);text-align:left}}
+.seq{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:12px 2px 0}
+.seq-lab{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3)}
+.legend{
+display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+padding:10px 2px 0;font-family:var(--mono);font-size:10px;
+letter-spacing:.10em;text-transform:uppercase;color:var(--ink-3);
+}
+.ramp{display:flex;height:9px;width:150px;border:1px solid var(--rule)}
+.ramp i{flex:1}
+.selbar{
+margin-top:18px;background:var(--panel);border:1px solid var(--ink);
+padding:16px 18px;display:flex;justify-content:space-between;
+align-items:flex-start;gap:16px;flex-wrap:wrap;
+}
+.selbar h2{
+margin:0;font-family:var(--disp);font-weight:700;font-size:26px;
+letter-spacing:-.015em;line-height:1.1;
+}
+.selbar .kicker{
+font-family:var(--mono);font-size:10px;letter-spacing:.16em;
+text-transform:uppercase;color:var(--ink-3);margin-bottom:5px;
+}
+.selbar .meta{font-size:13px;color:var(--ink-2);margin-top:6px}
+.splitbar{display:flex;height:8px;width:220px;border:1px solid var(--rule);margin-top:9px}
+.splitbar i{display:block}
+.roster{margin-top:0}
+.roster-head{
+display:flex;justify-content:space-between;align-items:baseline;
+padding-bottom:8px;border-bottom:1px solid var(--ink);gap:12px;flex-wrap:wrap;
+}
+.roster-head h3{
+margin:0;font-family:var(--mono);font-size:11px;letter-spacing:.18em;
+text-transform:uppercase;color:var(--ink-2);font-weight:500;
+}
+.grp{margin-top:22px}
+.grp-label{
+font-family:var(--mono);font-size:10px;letter-spacing:.18em;text-transform:uppercase;
+color:var(--ink-3);padding:0 0 6px;border-bottom:1px solid var(--rule);
+display:flex;justify-content:space-between;
+}
+.rows{list-style:none;margin:0;padding:0}
+.row{border-bottom:1px solid var(--rule-soft);background:transparent}
+.rowbtn{
+width:100%;display:grid;grid-template-columns:58px minmax(0,1fr) auto;
+gap:14px;align-items:center;padding:11px 8px 11px 0;
+background:none;border:0;text-align:left;cursor:pointer;font:inherit;color:inherit;
+border-left:3px solid transparent;padding-left:11px;
+}
+.rowbtn:hover{background:var(--accent-soft)}
+.rowbtn:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+.row.open .rowbtn{border-left-color:var(--accent);background:var(--accent-soft)}
+.seat{
+font-family:var(--mono);font-size:12px;font-weight:600;letter-spacing:.03em;
+color:var(--ink);white-space:nowrap;
+}
+.seat small{display:block;font-size:8.5px;letter-spacing:.14em;color:var(--ink-3);font-weight:400}
+.who{min-width:0;display:block}
+.who .nm,.who .sc{display:block}
+.who .nm{font-weight:600;font-size:15.5px;letter-spacing:-.005em}
+.who .sc{font-size:12.5px;color:var(--ink-3);margin-top:1px}
+.tags{display:flex;gap:6px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+.pill{
+font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;
+padding:2px 7px;border:1px solid currentColor;white-space:nowrap;
+}
+.pill.d{color:var(--dem)} .pill.r{color:var(--rep)} .pill.v{color:var(--vac)}
+.pill.lead{color:var(--accent);background:var(--accent-soft);border-color:var(--accent)}
+.pill.ballot{color:var(--warn)}
+.pill.tier1{color:var(--rep);font-weight:600}
+.pill.tier2{color:var(--warn)}
+.pill.tier3{color:var(--ink-3)}
+.detail{padding:0 11px 16px 14px;display:none}
+.row.open .detail{display:block;background:var(--accent-soft)}
+.dl{display:grid;grid-template-columns:repeat(auto-fit,minmax(158px,1fr));gap:12px 22px;margin:2px 0 0}
+.dl div{min-width:0}
+.dl dt{
+font-family:var(--mono);font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;
+color:var(--ink-3);margin-bottom:2px;
+}
+.dl dd{margin:0;font-size:13.5px;color:var(--ink);word-wrap:break-word}
+.dl dd.mono{font-family:var(--mono);font-size:12.5px}
+.note{
+margin-top:12px;padding:9px 11px;border-left:2px solid var(--accent);
+background:rgba(255,255,255,.6);font-size:13px;color:var(--ink-2);
+}
+.empty{
+padding:34px 16px;text-align:center;color:var(--ink-3);
+border:1px dashed var(--rule);margin-top:18px;
+}
+.empty b{display:block;color:var(--ink);font-size:15px;margin-bottom:4px;font-weight:600}
+.rail{position:sticky;top:74px}
+@media (max-width:1080px){.rail{position:static}}
+.card{background:var(--panel);border:1px solid var(--ink);padding:16px 16px 18px}
+.card + .card{margin-top:16px}
+.card h3{
+margin:0 0 14px;font-family:var(--mono);font-size:11px;letter-spacing:.18em;
+text-transform:uppercase;color:var(--ink-2);font-weight:500;
+display:flex;justify-content:space-between;align-items:center;
+}
+.fgroup{margin-bottom:14px}
+.fgroup:last-child{margin-bottom:0}
+label.flab{
+display:block;font-family:var(--mono);font-size:9px;letter-spacing:.15em;
+text-transform:uppercase;color:var(--ink-3);margin-bottom:5px;
+}
+input[type=search],select{
+width:100%;font-family:var(--sans);font-size:14px;color:var(--ink);
+background:#fff;border:1px solid var(--rule);border-radius:0;
+padding:9px 10px;appearance:none;
+}
+select{
+background-image:linear-gradient(45deg,transparent 50%,var(--ink-3) 50%),linear-gradient(135deg,var(--ink-3) 50%,transparent 50%);
+background-position:calc(100% - 16px) 52%,calc(100% - 11px) 52%;
+background-size:5px 5px,5px 5px;background-repeat:no-repeat;padding-right:32px;
+}
+input[type=search]:focus,select:focus{outline:2px solid var(--accent);outline-offset:-1px;border-color:var(--accent)}
+input[type=search]::-webkit-search-cancel-button{cursor:pointer}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{
+font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;
+padding:6px 10px;border:1px solid var(--rule);background:#fff;color:var(--ink-2);
+cursor:pointer;border-radius:0;
+}
+.chip:hover{border-color:var(--ink-3)}
+.chip:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.chip[aria-pressed=true]{background:var(--ink);border-color:var(--ink);color:var(--panel)}
+.chip.dem[aria-pressed=true]{background:var(--dem);border-color:var(--dem)}
+.chip.rep[aria-pressed=true]{background:var(--rep);border-color:var(--rep)}
+.switch{display:flex;align-items:center;gap:9px;cursor:pointer;font-size:13.5px;color:var(--ink-2)}
+.switch input{width:15px;height:15px;accent-color:var(--accent);cursor:pointer;margin:0}
+.reset{
+width:100%;margin-top:16px;padding:10px;background:transparent;color:var(--ink-2);
+border:1px solid var(--rule);font-family:var(--mono);font-size:10px;
+letter-spacing:.15em;text-transform:uppercase;cursor:pointer;
+}
+.reset:hover{background:var(--ink);color:var(--panel);border-color:var(--ink)}
+.reset:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.tally{
+font-family:var(--mono);font-size:11px;color:var(--ink-2);
+display:flex;justify-content:space-between;padding:7px 0;
+border-bottom:1px solid var(--rule-soft);
+}
+.tally:last-of-type{border-bottom:none}
+.tally b{color:var(--ink);font-weight:600}
+.hint{font-size:12px;color:var(--ink-3);margin-top:12px;line-height:1.45}
+#tip{
+position:fixed;z-index:60;pointer-events:none;opacity:0;
+transform:translate(-50%,-118%);transition:opacity .10s ease;
+background:var(--ink);color:#F2EFE8;padding:7px 10px;
+font-family:var(--mono);font-size:10.5px;letter-spacing:.05em;line-height:1.5;
+white-space:nowrap;
+}
+#tip b{color:#fff;letter-spacing:.10em;text-transform:uppercase;font-weight:600}
+footer{
+max-width:1560px;margin:0 auto;padding:6px 24px 40px;
+font-family:var(--mono);font-size:10px;letter-spacing:.07em;
+color:var(--ink-3);line-height:1.7;
+}
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+@media (max-width:640px){svg.map text.lbl{display:none}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<header class="masthead">
+<div class="masthead-in">
+<div class="wordmark">
+<span class="org">General Building Contractors Association</span>
+<span class="div"></span>
+<span class="sub">Government Relations &amp; Advocacy Data Engine</span>
+</div>
+<div class="stamp">
+Pennsylvania State Delegation Index<br>
+Roster snapshot <b id="snapdate">-</b> &middot; Source: <b>10_PA_Politicians</b>
+</div>
+</div>
+</header>
+<main class="shell">
+<section class="col-map">
+<div class="plate">
+<div class="plate-inner">
+<span class="plate-eyebrow">Plate 01 &mdash; County index &middot; click a county to load its delegation</span>
+<svg class="map" id="map" role="group" aria-label="Map of Pennsylvania counties. Select a county to view its legislative delegation."></svg>
+</div>
+<div class="titleblock">
+<div class="tb-row">
+<div class="tb-cell"><span class="tb-k">Drawing</span><span class="tb-v">PA Legislative Delegation &mdash; County Index</span></div>
+<div class="tb-cell"><span class="tb-k">Sheet</span><span class="tb-v">LT-01</span></div>
+</div>
+<div class="tb-row">
+<div class="tb-cell"><span class="tb-k">Prepared for</span><span class="tb-v">GBCA GRADE</span></div>
+<div class="tb-cell"><span class="tb-k">Rev</span><span class="tb-v" id="tbdate">-</span></div>
+</div>
+<div class="tb-counts">
+<div><b id="tbHouse">-</b><span>House</span></div>
+<div><b id="tbSen">-</b><span>Senate</span></div>
+<div><b id="tbExec">-</b><span>Exec</span></div>
+<div><b>67</b><span>Counties</span></div>
+</div>
+</div>
+<div class="seq">
+<span class="seq-lab">Southeast region</span>
+<div class="chips" id="seRegion">
+<button class="chip" data-c="Philadelphia">Philadelphia</button>
+<button class="chip" data-c="Delaware">Delaware</button>
+<button class="chip" data-c="Montgomery">Montgomery</button>
+<button class="chip" data-c="Chester">Chester</button>
+<button class="chip" data-c="Bucks">Bucks</button>
+</div>
+</div>
+<div class="legend">
+<span>Delegation lean</span>
+<span style="color:var(--rep)">R</span>
+<span class="ramp" id="ramp"></span>
+<span style="color:var(--dem)">D</span>
+<span style="margin-left:6px">Party split of the county's combined House and Senate delegation</span>
+</div>
+</div>
+<div class="selbar">
+<div>
+<div class="kicker" id="selKicker">Viewing</div>
+<h2 id="selTitle">All Pennsylvania</h2>
+<div class="meta" id="selMeta"></div>
+<div class="splitbar" id="selSplit" hidden></div>
+</div>
+<div id="selCounts" style="font-family:var(--mono);font-size:11px;color:var(--ink-2);text-align:right;line-height:1.8"></div>
+</div>
+</section>
+<aside class="rail">
+<div class="card">
+<h3>Find an official</h3>
+<div class="fgroup">
+<label class="flab" for="q">Search name, district, city or county</label>
+<input type="search" id="q" placeholder="e.g. Bradford, HD-70, Scranton, Bucks" autocomplete="off">
+</div>
+<div class="fgroup">
+<label class="flab" for="fcounty">County</label>
+<select id="fcounty"><option value="">All 67 counties</option></select>
+</div>
+<div class="fgroup">
+<label class="flab" for="fcity">City or municipality of residence</label>
+<select id="fcity"><option value="">All municipalities</option></select>
+</div>
+<div class="fgroup">
+<span class="flab">Body</span>
+<div class="chips" id="fchamber" role="group" aria-label="Filter by body">
+<button class="chip" data-v="" aria-pressed="true">All</button>
+<button class="chip" data-v="House" aria-pressed="false">House</button>
+<button class="chip" data-v="Senate" aria-pressed="false">Senate</button>
+<button class="chip" data-v="Executive" aria-pressed="false">Executive</button>
+</div>
+</div>
+<div class="fgroup">
+<span class="flab">Party</span>
+<div class="chips" id="fparty" role="group" aria-label="Filter by party">
+<button class="chip" data-v="" aria-pressed="true">All</button>
+<button class="chip dem" data-v="Democratic" aria-pressed="false">Democratic</button>
+<button class="chip rep" data-v="Republican" aria-pressed="false">Republican</button>
+<button class="chip" data-v="Other" aria-pressed="false">Other</button>
+</div>
+</div>
+<div class="fgroup">
+<span class="flab">Narrow</span>
+<label class="switch"><input type="checkbox" id="fballot"> On the 2026 ballot</label>
+<label class="switch" style="margin-top:7px"><input type="checkbox" id="fopen"> Seat opening &mdash; retiring, lost primary or vacant</label>
+<label class="switch" style="margin-top:7px"><input type="checkbox" id="flead"> Holds a leadership post</label>
+<label class="switch" style="margin-top:7px"><input type="checkbox" id="ftier"> Tier 1 agencies only (executive)</label>
+</div>
+<button class="reset" id="reset">Clear all filters</button>
+</div>
+<div class="card">
+<h3>In view</h3>
+<div class="tally"><span>Democratic</span><b id="tD">0</b></div>
+<div class="tally"><span>Republican</span><b id="tR">0</b></div>
+<div class="tally"><span>Other or vacant</span><b id="tO">0</b></div>
+<div class="tally"><span>On 2026 ballot</span><b id="tB">0</b></div>
+<div class="tally"><span>Seats opening</span><b id="tOpen">0</b></div>
+<p class="hint">Executive branch officials are statewide and are not tied to a county. Select <b>Executive</b> under Body to see them while a county is selected.</p>
+</div>
+</aside>
+<section class="col-roster">
+<div class="roster">
+<div class="roster-head">
+<h3>Officials</h3>
+<span style="font-family:var(--mono);font-size:11px;color:var(--ink-3)" id="resultCount"></span>
+</div>
+<div id="results"></div>
+</div>
+</section>
+</main>
+<div id="tip" role="status" aria-live="polite"></div>
+<footer>
+Roster compiled by GBCA Government Relations &amp; Advocacy Data Engine (GRADE). House and Senate rosters cross-verified against the 2026 primary and special election results; cabinet roster from pa.gov.
+<br>Incumbent 2026 status is marked <b>Inferred</b> for most House members &mdash; verify individually before relying on it externally. Refresh weekly per <b>00_Reference/01_Weekly_Refresh_Runbook.md</b>.
+</footer><script>const RAW = {"snap":"2026-08-04","map":{"w":1000,"h":579,"counties":[{"n":"Adams","d":"M560,511 580,500 601,513 611,548 604,554 604,579 525,579 523,529 534,517Z"},{"n":"Allegheny","d":"M140,396 140,419 126,444 126,448 128,450 127,464 107,472 97,467 94,463 97,461 83,450 58,440 27,407 50,386 64,376 64,363 142,364 129,391Z","cx":86,"cy":413},{"n":"Armstrong","d":"M224,277 224,340 183,395 164,388 151,365 142,364 142,250 155,294 212,286Z"},{"n":"Beaver","d":"M0,407 0,322 62,322 64,376 50,386 27,407Z"},{"n":"Bedford","d":"M326,442 355,460 358,447 383,461 388,448 392,465 409,478 381,555 367,579 294,579 302,556 301,503Z","cx":346,"cy":529},{"n":"Berks","d":"M794,362 856,414 827,461 797,485 700,403 746,394 773,385 776,370Z","cx":791,"cy":438},{"n":"Blair","d":"M339,409 372,351 370,349 412,348 394,363 398,389 410,406 383,461 358,447 355,460 326,442 335,432Z"},{"n":"Bradford","d":"M625,153 616,61 750,62 756,140 741,141 738,166Z","cx":687,"cy":101},{"n":"Bucks","d":"M946,486 895,446 864,421 877,405 913,378 914,382 930,387 935,393 935,412 937,421 943,424 986,467 995,481 991,485 951,505 949,503 954,494 953,489Z"},{"n":"Butler","d":"M64,363 61,288 89,250 142,250 142,364Z","cx":102,"cy":326},{"n":"Cambria","d":"M319,461 280,460 273,451 251,451 274,406 295,351 372,351 339,409 335,432 326,442Z"},{"n":"Cameron","d":"M416,239 392,236 389,197 360,197 360,148 397,148 424,181 434,181 434,205Z"},{"n":"Carbon","d":"M776,308 821,287 814,271 835,261 862,291 848,300 865,331 842,337 817,349Z"},{"n":"Centre","d":"M541,323 487,350 462,347 442,359 410,347 370,349 368,344 389,321 403,297 419,298 423,288 413,263 426,254 450,231 451,248 467,247 476,264 497,268 516,297 579,279Z","cx":467,"cy":292},{"n":"Chester","d":"M885,501 876,506 872,519 850,538 845,553 829,559 820,568 812,579 752,579 764,570 777,546 778,530 785,491 797,485 827,461 845,465 848,471 851,469 857,482Z"},{"n":"Clarion","d":"M157,216 179,212 179,201 192,189 225,191 224,277 212,286 155,294 141,249Z"},{"n":"Clearfield","d":"M372,351 295,351 294,259 321,231 416,239 426,254 413,263 423,288 419,298 403,297 389,321 368,344Z","cx":358,"cy":293},{"n":"Clinton","d":"M434,181 501,180 513,207 549,239 579,273 579,279 516,297 497,268 476,264 467,247 451,248 450,231 426,254 416,239 434,205Z","cx":497,"cy":235},{"n":"Columbia","d":"M674,253 705,218 722,218 721,242 736,257 740,300 726,315 723,334 710,340 705,326 689,328 685,315 687,298 669,274 665,253Z"},{"n":"Crawford","d":"M156,95 156,148 119,147 89,177 68,179 0,177 0,96Z","cx":78,"cy":121},{"n":"Cumberland","d":"M580,500 560,511 534,517 523,529 498,471 541,445 532,456 618,441 628,464 620,478 599,482Z"},{"n":"Dauphin","d":"M628,464 615,435 599,427 612,409 605,388 607,384 611,381 612,373 622,377 655,366 683,390 659,408 678,471 651,489Z"},{"n":"Delaware","d":"M850,538 872,519 876,506 885,501 899,521 902,544 910,544 911,546 900,550 894,550 876,561 861,554 845,553Z"},{"n":"Elk","d":"M268,147 349,145 360,152 360,197 389,197 392,236 321,231 310,243 306,229 265,203 244,211 250,186 268,189Z"},{"n":"Erie","d":"M156,62 156,95 0,96 0,66 33,53 57,40 63,35 69,24 76,22 77,26 76,27 79,28 101,14 130,0 130,62Z","cx":87,"cy":47},{"n":"Fayette","d":"M193,579 104,579 104,543 89,520 110,507 110,487 137,488 151,496 159,495 161,492 168,490 174,484 182,485 210,507 189,549 198,557Z","cx":147,"cy":531},{"n":"Forest","d":"M173,147 268,147 268,189 250,186 244,211 225,213 225,191 192,189 179,201 173,183Z"},{"n":"Franklin","d":"M483,456 489,450 523,529 525,579 415,579 432,555 446,516Z","cx":484,"cy":486},{"n":"Fulton","d":"M415,579 367,579 381,555 409,478 445,493 455,502 446,516 432,555Z"},{"n":"Greene","d":"M104,579 0,579 0,524 24,517 62,516 89,520 104,543Z"},{"n":"Huntingdon","d":"M412,348 442,359 462,347 487,350 486,362 459,391 464,402 447,425 475,430 483,456 455,502 445,493 409,478 392,465 388,448 410,406 398,389 394,363Z"},{"n":"Indiana","d":"M295,351 265,426 251,429 227,422 221,418 218,418 183,406 183,395 224,340 224,309 294,310Z","cx":243,"cy":373},{"n":"Jefferson","d":"M225,213 244,211 265,203 306,229 310,243 294,259 294,310 224,309Z"},{"n":"Juniata","d":"M475,430 499,399 518,377 548,361 554,358 598,362 614,371 612,373 572,384 575,388 546,403 511,425 483,456Z"},{"n":"Lackawanna","d":"M829,211 820,209 804,198 804,191 823,143 867,143 871,229 860,236 844,252 835,245Z"},{"n":"Lancaster","d":"M749,444 797,485 785,491 778,530 777,546 764,570 752,579 734,579 694,528 684,504 661,501 651,489 678,471 723,458Z","cx":735,"cy":516},{"n":"Lawrence","d":"M73,273 61,288 62,322 0,322 0,260 64,263Z"},{"n":"Lebanon","d":"M749,444 723,458 678,471 659,408 683,390Z"},{"n":"Lehigh","d":"M864,421 794,362 842,337 864,367 873,363 877,384 890,394 877,405Z"},{"n":"Luzerne","d":"M740,300 736,257 721,242 722,218 727,203 774,201 804,191 804,198 820,209 829,211 835,245 844,252 838,261 814,271 821,287 770,311Z","cx":783,"cy":249},{"n":"Lycoming","d":"M698,226 674,253 659,254 650,249 640,249 624,253 622,257 608,269 579,273 549,239 513,207 501,180 501,165 602,164 625,153 636,154 647,196 674,219Z","cx":593,"cy":213},{"n":"McKean","d":"M360,152 349,145 268,147 269,100 275,62 397,61 397,148 360,148Z","cx":333,"cy":123},{"n":"Mercer","d":"M89,177 89,250 73,273 64,263 0,260 0,177 68,179Z"},{"n":"Mifflin","d":"M487,350 541,323 542,324 543,356 554,358 518,377 499,399 475,430 447,425 464,402 459,391 486,362Z"},{"n":"Monroe","d":"M844,252 860,236 925,231 920,254 950,271 940,281 924,291 924,295 926,296 895,320 865,331 848,300 862,291 835,261 838,261Z","cx":895,"cy":286},{"n":"Montgomery","d":"M885,501 857,482 851,469 848,471 845,465 827,461 856,414 944,484 930,500 932,501 928,505 917,497 901,504 904,518 899,521Z"},{"n":"Montour","d":"M665,253 669,274 687,298 685,315 680,303 662,296 639,301 650,249 659,254Z"},{"n":"Northampton","d":"M842,337 895,320 926,296 927,299 938,319 928,336 924,340 917,339 913,345 912,359 913,378 890,394 877,384 873,363 864,367Z"},{"n":"Northumberland","d":"M622,257 624,253 640,249 650,249 639,301 662,296 680,303 689,328 705,326 710,340 655,366 622,377 612,373 629,350 628,339 630,332 636,323 638,316 624,295Z"},{"n":"Perry","d":"M618,441 532,456 541,445 498,471 489,450 511,425 546,403 575,388 572,384 612,373 611,381 607,384 605,388 612,409 599,427 615,435Z"},{"n":"Philadelphia","d":"M901,504 917,497 928,505 932,501 930,500 944,484 953,489 954,494 949,503 951,505 911,546 910,544 902,544 899,521 904,518Z"},{"n":"Pike","d":"M952,267 950,271 920,254 925,231 885,234 893,213 938,151 940,159 949,174 962,180 968,189 989,192 1000,206 982,216 976,223 971,234 967,247 960,257 951,265Z"},{"n":"Potter","d":"M499,61 501,180 424,181 397,148 397,61Z","cx":448,"cy":105},{"n":"Schuylkill","d":"M776,370 773,385 746,394 700,403 655,366 723,334 726,315 740,300 770,311 776,308 817,349Z","cx":737,"cy":358},{"n":"Snyder","d":"M638,315 636,323 630,331 628,336 629,350 614,371 598,362 570,361 543,356 543,332 614,314Z"},{"n":"Somerset","d":"M280,460 319,461 301,503 302,556 294,579 193,579 198,557 189,549 210,507 229,491 251,451 273,451Z","cx":251,"cy":528},{"n":"Sullivan","d":"M698,226 674,219 647,196 636,154 738,166 722,218 705,218Z"},{"n":"Susquehanna","d":"M867,143 756,140 750,62 864,61Z"},{"n":"Tioga","d":"M602,164 501,165 499,61 616,61 625,153Z","cx":560,"cy":107},{"n":"Union","d":"M543,332 542,324 541,323 579,279 579,273 608,269 622,257 624,295 638,315 614,314Z"},{"n":"Venango","d":"M179,201 179,212 157,216 141,249 89,250 89,177 119,147 156,148 156,147 173,147 173,183Z"},{"n":"Warren","d":"M268,147 156,147 156,62 275,62 269,100Z","cx":212,"cy":123},{"n":"Washington","d":"M0,524 0,407 27,407 58,440 83,450 97,461 94,463 97,467 104,471 111,471 110,507 89,520 62,516 24,517Z"},{"n":"Wayne","d":"M860,236 871,229 864,61 885,61 899,75 902,87 927,97 938,118 938,151 893,213 885,234Z"},{"n":"Westmoreland","d":"M140,419 140,396 129,391 142,364 151,365 164,388 183,395 183,406 218,418 221,418 227,422 251,429 265,426 229,491 210,507 178,483 174,484 168,490 161,492 159,495 151,496 137,488 110,487 111,471 127,464 128,450 126,448 126,444Z","cx":195,"cy":437},{"n":"Wyoming","d":"M727,203 737,169 741,141 823,143 804,191 774,201Z"},{"n":"York","d":"M651,489 661,501 684,504 694,528 734,579 604,579 604,554 611,548 601,513 580,500 599,482 620,478 628,464Z","cx":647,"cy":520}]},"co":["Adams","Allegheny","Armstrong","Beaver","Bedford","Berks","Blair","Bradford","Bucks","Butler","Cambria","Cameron","Carbon","Centre","Chester","Clarion","Clearfield","Clinton","Columbia","Crawford","Cumberland","Dauphin","Delaware","Elk","Erie","Fayette","Forest","Franklin","Fulton","Greene","Huntingdon","Indiana","Jefferson","Juniata","Lackawanna","Lancaster","Lawrence","Lebanon","Lehigh","Luzerne","Lycoming","McKean","Mercer","Mifflin","Monroe","Montgomery","Montour","Northampton","Northumberland","Perry","Philadelphia","Pike","Potter","Schuylkill","Snyder","Somerset","Sullivan","Susquehanna","Tioga","Union","Venango","Warren","Washington","Wayne","Westmoreland","Wyoming","York"],"ci":["Erie","Millcreek Township","Waterford","Bern Township","East Mead Township","Greenville","New Beaver","New Castle","Philadelphia","Butler Township","Franklin Township","Beaver Falls","Beaver","Ambridge","Grove City","Bensalem","Pittsburgh","Allentown","Monroeville","East Vincent Township","Wexford","Doylestown","McCandless","Newtown","Penn Hills","Fox Chapel","Swissvale","McKeesport","Manheim","West Mifflin","Elizabeth Township","Upper St. Clair","East Hempfield Township","Dormont","West Lampeter Township","Moon Township","Kennedy Township","South Fayette Township","Mount Wolf","South Strabane Township","Lancaster","Jefferson","Smithfield","Perryopolis","Lansdale","Norristown","Murrysville","Penn Township","Hempfield Township","Smithton","Unity Township","Leechburg","Lower Gwynedd Township","Indiana","Clarion","Oil City","Warren","Punxsutawney","Port Allegany","Liberty","Berlin","Worcester Township","Johnstown","East Taylor Township","Decatur Township","Sadsbury Township","Sandy Township","Lock Haven","Rush Township","Bedford","Blair","Hollidaysburg","Warriors Mark Township","College Township","South Williamsport","Hepburn Township","East Buffalo Township","Tyrone Township","Lower Allen Township","Chambersburg","Waynesboro","Conewago Township","Dillsburg","York Township","Red Lion","York","Manheim Township","East Donegal Township","East Earl Township","Drumore Township","Cornwall","Annville Township","Harrisburg","Susquehanna Township","Lower Swatara Township","Hegins Township","Sunbury","Catawissa","Towanda","Honesdale","Blakely","Scranton","Coolbaugh Township","McAdoo","Sweet Valley","Pittston Township","Plymouth","Dallas Township","Wilkes-Barre","Lower Towamensing Township","East Brunswick Township","Lykens","Muhlenberg Township","Reading","Robeson Township","Pike Township","Lower Saucon Township","Whitehall Township","Bethlehem","Easton","Nazareth","Moore Township","Hawley","Falls Township","Levittown","Langhorne","Plumstead Township","Warminster","Richland Township","Limerick Township","Lower Salford Township","Narberth","Upper Merion Township","Montgomery County","Horsham","Hatboro","Abington Township","Cheltenham Township","Uwchlan Township","West Chester","Schuylkill Township","West Bradford","Chester","Concord Township","Swarthmore","Ridley Township","Upper Darby","Upper Darby Township","Springfield Township","Havertown","East Whiteland Township","Radnor Township","Hanover","Bellefonte","Jackson Township","Wrightstown Township","Walnutport","Lower Macungie Township","Stroudsburg","York Springs","Middlesex Township","Langhorne Borough","Birmingham","Lower Makefield Township","Fleetwood","Upper Macungie Township","East Norriton Township","Bethlehem Township","Lehman Township","Loyalsock Township","Harleysville","Pine Creek Township","Bullskin Township","Greene Township","Silver Spring Township","East Petersburg","Bridgeville","West View","East Stroudsburg","Forest Hills","Monongahela","New Sewickley Township","North Cornwall Township","Jamestown"],"st":["Seeking reelection","Vacant - special election 2026-08-18","Lost primary","Retiring","Retiring - running for PA Senate","Retiring - running for U.S. House","Not on 2026 ballot","Seeking reelection - won May 19 primary"],"ld":["Majority Policy Chair","Majority Caucus Chair","Minority Whip","Minority Caucus Secretary","Majority Leader","Minority Leader","Minority Caucus Administrator","Majority Whip","Majority Caucus Secretary","Majority Caucus Administrator","Minority Caucus Chair","Majority Appropriations Chair","Speaker of the House","Minority Appropriations Chair","Minority Policy Chair","President Pro Tempore"],"H":[[1,"Pat Harkins",0,-1,2006,20,0,0,0,[24]],[2,"Robert Merski",0,-1,2018,8,0,0,0,[24]],[3,"Ryan Bizzarro",0,0,2012,14,0,0,1,[24]],[4,"Jake Banta",1,-1,2022,4,0,0,2,[24]],[5,"Eric Weaknecht",1,-1,2024,2,0,0,3,[5]],[6,"Brad Roae",1,-1,2006,20,0,0,4,[19,24]],[7,"Parke Wentling",1,-1,2014,12,0,0,5,[42]],[8,"Aaron Bernstine",1,-1,2016,10,0,0,6,[9,36]],[9,"Marla Brown",1,-1,2022,4,0,0,7,[36]],[10,"Amen Brown",0,-1,2020,6,0,0,8,[50]],[11,"Marci Mustello",1,-1,2019,7,0,0,9,[9]],[12,"Vacant",2,-1,0,0,1,1,-1,[9]],[13,"John Lawrence",1,-1,2010,16,0,0,10,[14]],[14,"Roman Kozak",1,-1,2024,2,0,0,11,[3]],[15,"Josh Kail",1,-1,2018,8,0,0,12,[3,62]],[16,"Robert Matzie",0,1,2008,18,0,0,13,[3]],[17,"Timothy R. Bonner",1,-1,2020,6,0,0,14,[9,42]],[18,"K.C. Tomlinson",1,-1,2020,6,0,0,15,[8]],[19,"Aerion Abney",0,-1,2022,4,0,0,16,[1]],[20,"Emily Kinkead",0,-1,2020,6,0,0,16,[1]],[21,"Lindsay Powell",0,-1,2023,3,0,0,16,[1]],[22,"Ana Tiburcio",0,-1,2026,0,2,1,17,[38]],[23,"Dan Frankel",0,-1,1998,28,0,0,16,[1]],[24,"La'Tasha Mayes",0,-1,2022,4,0,0,16,[1]],[25,"Brandon Markosek",0,-1,2018,8,0,0,18,[1]],[26,"Paul Friel",0,-1,2022,4,0,0,19,[14]],[27,"Daniel Deasy",0,-1,2008,18,0,0,16,[1]],[28,"Jeremy Shaffer",1,-1,2024,2,0,0,20,[1]],[29,"Tim Brennan",0,-1,2022,4,0,0,21,[8]],[30,"Arvind Venkat",0,-1,2022,4,0,0,22,[1]],[31,"Perry Warren",0,-1,2016,10,0,0,23,[8]],[32,"Joe McAndrew",0,-1,2023,3,0,0,24,[1]],[33,"Mandy Steele",0,-1,2022,4,0,0,25,[1]],[34,"Abigail Salisbury",0,-1,2023,3,0,0,26,[1]],[35,"Daniel Goughnour",0,-1,2025,1,0,0,27,[1]],[36,"Jessica Benham",0,-1,2020,6,0,0,16,[1]],[37,"Mindy Fee",1,-1,2012,14,0,0,28,[35]],[38,"John Inglis",0,-1,2024,2,0,0,29,[1]],[39,"Andrew Kuzma",1,-1,2022,4,0,0,30,[1,62]],[40,"Natalie Mihalek",1,-1,2018,8,0,0,31,[1,62]],[41,"Brett Miller",1,-1,2014,12,0,0,32,[35]],[42,"Jen Mazzocco",0,-1,2026,0,0,0,33,[1]],[43,"Keith Greiner",1,-1,2012,14,0,0,34,[35]],[44,"Valerie Gaydos",1,-1,2018,8,0,0,35,[1]],[45,"Anita Astorino Kulik",0,-1,2016,10,3,1,36,[1]],[46,"Jason Ortitay",1,-1,2014,12,0,0,37,[1,62]],[47,"Joseph D'Orsie",1,-1,2022,4,0,0,38,[66]],[48,"Tim O'Neal",1,2,2018,8,0,0,39,[62]],[49,"Ismail Smith-Wade-El",0,-1,2022,4,0,0,40,[35]],[50,"Bud Cook",1,-1,2016,10,2,1,41,[29,62]],[51,"Charity Grimm Krupa",1,-1,2022,4,0,0,42,[25]],[52,"Ryan Warner",1,-1,2014,12,0,0,43,[25]],[53,"Steve Malagari",0,-1,2018,8,0,0,44,[45]],[54,"Greg Scott",0,-1,2022,4,0,0,45,[45]],[55,"Jill N. Cooper",1,-1,2022,4,0,0,46,[64]],[56,"Brian Rasel",1,-1,2024,2,0,0,47,[64]],[57,"Eric Nelson",1,-1,2016,10,0,0,48,[64]],[58,"Eric Davanzo",1,-1,2020,6,0,0,49,[64]],[59,"Leslie Rossi",1,-1,2021,5,0,0,50,[64]],[60,"Abby Major",1,-1,2021,5,0,0,51,[2,64]],[61,"Liz Hanbidge",0,-1,2018,8,0,0,52,[45]],[62,"James Struzzi",1,-1,2018,8,0,0,53,[31]],[63,"Josh Bashline",1,-1,2024,2,0,0,54,[2,15]],[64,"Lee James",1,-1,2012,14,0,0,55,[19,60]],[65,"Kathy Rapp",1,-1,2004,22,0,0,56,[19,26,61]],[66,"Brian Smith",1,-1,2020,6,0,0,57,[31,32]],[67,"Martin Causer",1,-1,2002,24,0,0,58,[11,41,52]],[68,"Clint Owlett",1,3,2018,8,0,0,59,[7,58]],[69,"Carl Walker Metzgar",1,-1,2008,18,0,0,60,[55]],[70,"Matthew Bradford",0,4,2008,18,0,0,61,[45]],[71,"James Rigby",1,-1,2018,8,0,0,62,[10,55]],[72,"Frank Burns",0,-1,2008,18,0,0,63,[10]],[73,"Dallas Kephart",1,-1,2022,4,0,0,64,[10,16]],[74,"Dan K. Williams",0,-1,2018,8,0,0,65,[14]],[75,"Michael Armanini",1,-1,2020,6,0,0,66,[16,23]],[76,"Stephanie Borowicz",1,-1,2018,8,0,0,67,[17,59]],[77,"Scott Conklin",0,-1,2006,20,0,0,68,[13]],[78,"Jesse Topper",1,5,2014,12,0,0,69,[4,28]],[79,"Andrea Verobish",1,-1,2026,0,0,0,70,[6]],[80,"Scott Barger",1,-1,2024,2,0,0,71,[6,30]],[81,"Rich Irvin",1,-1,2014,12,0,0,72,[27,30]],[82,"Paul Takac",0,-1,2022,4,0,0,73,[13]],[83,"Jamie Flick",1,-1,2022,4,0,0,74,[40,59]],[84,"Joseph D. Hamm",1,-1,2020,6,0,0,75,[40,56]],[85,"David Rowe",1,-1,2019,7,0,0,76,[33,43,54,59]],[86,"Perry A. Stambaugh",1,-1,2020,6,0,0,77,[33,49]],[87,"Thomas Kutz",1,-1,2022,4,0,0,78,[20]],[88,"Sheryl M. Delozier",1,6,2008,18,3,1,78,[20]],[89,"Rob Kauffman",1,-1,2004,22,0,0,79,[27]],[90,"Chad Reichard",1,-1,2024,2,0,0,80,[27]],[91,"Dan Moul",1,-1,2006,20,0,0,81,[0]],[92,"Marc Anderson",1,-1,2024,2,0,0,82,[66]],[93,"Mike Jones",1,-1,2018,8,0,0,83,[66]],[94,"Wendy Fink",1,-1,2022,4,0,0,84,[66]],[95,"Carol Hill-Evans",0,-1,2016,10,0,0,85,[66]],[96,"Nikki Rivera",0,-1,2024,2,0,0,40,[35]],[97,"Steven Mentzer",1,-1,2012,14,0,0,86,[35]],[98,"Tom Jones",1,-1,2022,4,4,1,87,[35,37]],[99,"David H. Zimmerman",1,-1,2014,12,0,0,88,[5,35]],[100,"Bryan Cutler",1,-1,2006,20,3,1,89,[35]],[101,"John A. Schlegel",1,-1,2022,4,0,0,90,[37]],[102,"Russ Diamond",1,-1,2014,12,0,0,91,[37]],[103,"Nathan Davidson",0,-1,2024,2,0,0,92,[20,21]],[104,"Dave Madsen",0,-1,2022,4,0,0,92,[21]],[105,"Justin C. Fleming",0,-1,2022,4,0,0,93,[21]],[106,"Tom Mehaffie",1,-1,2016,10,0,0,94,[21]],[107,"Joanne Stehr",1,-1,2022,4,0,0,95,[48,53]],[108,"Mike Stender",1,-1,2023,3,0,0,96,[46,48]],[109,"Robert Leadbeter",1,-1,2022,4,0,0,97,[18]],[110,"Tina Pickett",1,-1,2000,26,0,0,98,[7,65]],[111,"Jonathan Fritz",1,-1,2016,10,0,0,99,[57,63]],[112,"Kyle Mullins",0,-1,2018,8,0,0,100,[34]],[113,"Kyle Donahue",0,-1,2022,4,0,0,101,[34]],[114,"Bridget Malloy Kosierowski",0,-1,2019,7,0,0,101,[34]],[115,"Maureen Madden",0,-1,2016,10,0,0,102,[44]],[116,"Dane Watro",1,-1,2022,4,0,0,103,[39,53]],[117,"Jamie Walsh",1,-1,2024,2,0,0,104,[39]],[118,"Jim Haddock",0,-1,2022,4,0,0,105,[34,39]],[119,"Alec Ryncavage",1,-1,2022,4,0,0,106,[39]],[120,"Brenda Pugh",1,-1,2024,2,0,0,107,[39]],[121,"Eddie Day Pashinski",0,-1,2006,20,3,1,108,[39]],[122,"Doyle Heffley",1,-1,2010,16,0,0,109,[12]],[123,"Timothy Twardzik",1,-1,2020,6,0,0,9,[53]],[124,"Jamie Barton",1,-1,2022,4,0,0,110,[5,53]],[125,"Joseph Kerwin",1,-1,2020,6,0,0,111,[21]],[126,"Jacklyn Rusnock",0,-1,2024,2,0,0,112,[5]],[127,"Manny Guzman Jr.",0,-1,2020,6,0,0,113,[5]],[128,"Mark M. Gillen",1,-1,2010,16,0,0,114,[5]],[129,"Johanny Cepeda-Freytiz",0,-1,2022,4,0,0,113,[5]],[130,"David Maloney",1,-1,2010,16,3,1,115,[5]],[131,"Milou Mackenzie",1,-1,2020,6,0,0,116,[38,45,47]],[132,"Michael Schlossberg",0,7,2012,14,0,0,17,[38]],[133,"Jeanne McNeill",0,-1,2017,9,0,0,117,[38]],[134,"Peter Schweyer",0,-1,2014,12,0,0,17,[38]],[135,"Steve Samuelson",0,-1,1998,28,0,0,118,[47]],[136,"Robert L. Freeman",0,-1,1998,28,0,0,119,[47]],[137,"Joe Emrick",1,-1,2010,16,0,0,120,[47]],[138,"Ann Flood",1,-1,2020,6,0,0,121,[47]],[139,"Jeff Olsommer",1,-1,2024,2,0,0,122,[51,63]],[140,"Jim Prokopiak",0,-1,2024,2,0,0,123,[8]],[141,"Tina Davis",0,8,2010,16,0,0,124,[8]],[142,"Joe Hogan",1,-1,2022,4,0,0,125,[8]],[143,"Shelby Labs",1,-1,2020,6,0,0,126,[8]],[144,"Brian Munroe",0,-1,2022,4,0,0,127,[8]],[145,"Craig Staats",1,-1,2014,12,0,0,128,[8]],[146,"Joe Ciresi",0,-1,2018,8,0,0,129,[45]],[147,"Donna Scheuren",1,-1,2022,4,0,0,130,[45]],[148,"Mary Jo Daley",0,-1,2012,14,3,1,131,[45]],[149,"Tim Briggs",0,-1,2008,18,0,0,132,[45]],[150,"Joe Webster",0,-1,2018,8,0,0,133,[45]],[151,"Melissa Cerrato",0,-1,2022,4,0,0,134,[45]],[152,"Nancy Guenst",0,-1,2020,6,0,0,135,[45,50]],[153,"Ben Sanchez",0,-1,2018,8,0,0,136,[45]],[154,"Napoleon Nelson",0,-1,2020,6,0,0,137,[45]],[155,"Danielle Friel Otten",0,-1,2018,8,0,0,138,[14]],[156,"Chris Pielli",0,-1,2022,4,0,0,139,[14]],[157,"Melissa Shusterman",0,-1,2018,8,0,0,140,[14]],[158,"Christina Sappey",0,-1,2018,8,0,0,141,[14]],[159,"Carol Kazeem",0,-1,2022,4,0,0,142,[22]],[160,"Wendell Craig Williams",1,-1,2020,6,0,0,143,[14,22]],[161,"Leanne Krueger",0,9,2015,11,0,0,144,[22]],[162,"David Delloso",0,-1,2018,8,0,0,145,[22]],[163,"Heather Boyd",0,-1,2023,3,0,0,146,[22]],[164,"Gina Curry",0,-1,2021,5,0,0,147,[22]],[165,"Jennifer O'Mara",0,-1,2018,8,0,0,148,[22]],[166,"Greg Vitali",0,-1,1992,34,2,1,149,[22]],[167,"Kristine Howard",0,-1,2018,8,0,0,150,[14]],[168,"Lisa Borowski",0,-1,2022,4,0,0,151,[22]],[169,"Kate Klunk",1,-1,2014,12,0,0,152,[66]],[170,"Martina White",1,10,2015,11,0,0,8,[50]],[171,"Kerry Benninghoff",1,-1,1996,30,0,0,153,[13,43]],[172,"Sean Dougherty",0,-1,2024,2,0,0,8,[50]],[173,"Pat Gallagher",0,-1,2022,4,0,0,8,[50]],[174,"Ed Neilson",0,-1,2015,11,0,0,8,[50]],[175,"Mary Isaacson",0,-1,2018,8,0,0,8,[50]],[176,"Jack Rader",1,-1,2014,12,0,0,154,[44]],[177,"Joseph Hohenstein",0,-1,2018,8,0,0,8,[50]],[178,"Kristin Marcell",1,-1,2022,4,0,0,155,[8]],[179,"Jason Dawkins",0,-1,2014,12,0,0,8,[50]],[180,"Jose Giral",0,-1,2022,4,0,0,8,[50]],[181,"Malcolm Kenyatta",0,-1,2018,8,0,0,8,[50]],[182,"Ben Waxman",0,-1,2022,4,0,0,8,[50]],[183,"Zach Mako",1,-1,2016,10,0,0,156,[38,47]],[184,"Elizabeth Fiedler",0,-1,2018,8,0,0,8,[50]],[185,"Regina Young",0,-1,2020,6,0,0,8,[22,50]],[186,"Jordan A. Harris",0,11,2012,14,0,0,8,[50]],[187,"Gary Day",1,-1,2024,2,0,0,157,[38]],[188,"Rick Krajewski",0,-1,2020,6,0,0,8,[50]],[189,"Tarah Probst",0,-1,2022,4,0,0,158,[44,51]],[190,"Roni Green",0,-1,2022,4,0,0,8,[50]],[191,"Joanna McClinton",0,12,2015,11,0,0,8,[22,50]],[192,"Morgan Cephas",0,-1,2016,10,0,0,8,[50]],[193,"Catherine Wallen",1,-1,2026,0,0,0,159,[0,20]],[194,"Tarik Khan",0,-1,2022,4,0,0,8,[50]],[195,"Keith Harris",0,-1,2024,2,2,1,8,[50]],[196,"George Margetas",1,-1,2026,0,0,0,85,[66]],[197,"Danilo Burgos",0,-1,2018,8,0,0,8,[50]],[198,"Darisha Parker",0,-1,2020,6,0,0,8,[50]],[199,"Barbara Gleim",1,-1,2018,8,0,0,160,[20]],[200,"Chris Rabb",0,-1,2016,10,5,1,8,[50]],[201,"Andre Carroll",0,-1,2024,2,0,0,8,[50]],[202,"Jared Solomon",0,-1,2016,10,0,0,8,[50]],[203,"Anthony A. Bellmon",0,-1,2022,4,0,0,8,[50]]],"S":[[1,"Nikil Saval",0,-1,2020,6,6,8,[50],0],[2,"Christine Tartaglione",0,2,1994,32,7,8,[50],1],[3,"Sharif Street",0,-1,2016,10,6,8,[50],0],[4,"Art Haywood",0,-1,2014,12,7,8,[45,50],1],[5,"Joe Picozzi",1,-1,2024,2,6,8,[50],0],[6,"Frank Farry",1,-1,2022,4,7,161,[8],1],[7,"Vincent Hughes",0,13,1994,32,6,8,[45,50],0],[8,"Anthony Williams",0,-1,1998,28,7,8,[22,50],1],[9,"John Kane",0,-1,2020,6,6,162,[14,22],0],[10,"Steve Santarsiero",0,3,2018,8,7,163,[8],1],[11,"Judy Schwank",0,6,2011,15,6,164,[5],0],[12,"Maria Collett",0,10,2018,8,7,52,[45],1],[13,"Scott Martin",1,11,2016,10,6,34,[5,35],0],[14,"Nick Miller",0,14,2022,4,7,17,[38,47],1],[15,"Patty Kim",0,-1,2024,2,6,92,[21],0],[16,"Jarrett Coleman",1,-1,2022,4,7,165,[8,38],1],[17,"Amanda Cappelletti",0,-1,2020,6,6,166,[22,45],0],[18,"Lisa Boscola",0,-1,1998,28,7,167,[38,47],1],[19,"Carolyn Comitta",0,-1,2020,6,6,139,[14],0],[20,"Lisa Baker",1,9,2006,20,7,168,[39,51,57,63,65],1],[21,"Scott Hutchinson",1,-1,2012,14,6,55,[9,15,26,60,61],0],[22,"Marty Flynn",0,-1,2021,5,7,101,[34,39],1],[23,"Eugene Yaw",1,-1,2008,18,6,169,[7,40,56,58,59],0],[24,"Tracy Pennycuick",1,-1,2022,4,7,170,[5,45],1],[25,"Cris Dush",1,-1,2020,6,6,171,[11,13,17,23,32,41,52],0],[26,"Tim Kearney",0,-1,2018,8,7,144,[22],1],[27,"Lynda Culver",1,-1,2023,3,6,96,[18,39,46,48,54],0],[28,"Kristin Phillips-Hill",1,1,2018,8,7,83,[66],1],[29,"Dave Argall",1,0,2009,17,6,68,[12,39,53],0],[30,"Judy Ward",1,-1,2018,8,7,71,[6,28,30,33,43],1],[31,"Dawn Keefer",1,-1,2024,2,6,82,[20,66],0],[32,"Patrick Stefano",1,-1,2014,12,7,172,[4,25,55,64],1],[33,"Doug Mastriano",1,-1,2019,7,6,173,[0,27],0],[34,"Greg Rothman",1,-1,2022,4,7,174,[20,21,49],1],[35,"Wayne Langerholc",1,7,2016,10,6,62,[10,13,16],0],[36,"James Malone",0,-1,2025,1,7,175,[35],1],[37,"Devlin Robinson",1,-1,2020,6,6,176,[1],0],[38,"Lindsey Williams",0,-1,2018,8,7,177,[1],1],[39,"Kim Ward",1,15,2008,18,6,48,[64],0],[40,"Rosemary Brown",1,-1,2022,4,7,178,[34,44,63],1],[41,"Joe Pittman",1,4,2019,7,6,53,[2,31,32,64],0],[42,"Wayne Fontana",0,-1,2005,21,7,16,[1],1],[43,"Jay Costa",0,5,1996,30,6,179,[1],0],[44,"Katie Muth",0,-1,2018,8,7,19,[5,14,45],1],[45,"Nick Pisciottano",0,-1,2024,2,6,29,[1],0],[46,"Camera Bartolotta",1,8,2014,12,7,180,[3,29,62],1],[47,"Elder Vogel",1,-1,2008,18,6,181,[3,9,36],0],[48,"Chris Gebhard",1,-1,2021,5,7,182,[5,35,37],1],[49,"Dan Laughlin",1,-1,2016,10,6,1,[24],0],[50,"Michele Brooks",1,-1,2014,12,7,183,[19,36,42],1]],"E":[["EX001","Elected Statewide","Governor","Office of the Governor","Josh Shapiro","D","2023-01-17","2027-01-19","2026-11-03","Seeking 2nd term - unopposed in May 19 primary",1,"https://www.pa.gov/governor","General election opponent: Treasurer Stacy Garrity (R)"],["EX002","Elected Statewide","Lieutenant Governor","Office of the Lieutenant Governor","Austin Davis","D","2023-01-17","2027-01-19","2026-11-03","Seeking 2nd term - running on Shapiro ticket",2,"https://www.pa.gov/ltgovernor","Also serves as President of the PA Senate"],["EX003","Elected Statewide","Attorney General","Office of Attorney General","Dave Sunday","R","2025-01-21","2029-01-16","2028-11-07","Not on 2026 ballot",2,"https://www.attorneygeneral.gov","Independently elected - not a Shapiro appointee"],["EX004","Elected Statewide","Auditor General","Department of the Auditor General","Timothy DeFoor","R","2021-01-19","2029-01-16","2028-11-07","Not on 2026 ballot",2,"https://www.paauditor.gov","Re-elected Nov 2024 to 2nd term"],["EX005","Elected Statewide","State Treasurer","Pennsylvania Treasury","Stacy Garrity","R","2021-01-19","2029-01-16","2028-11-07","Not on 2026 ballot for Treasurer",2,"https://www.patreasury.gov","WATCH: 2026 Republican gubernatorial nominee. Treasurer seat opens if she wins Nov 3"],["EX010","Cabinet","Secretary of Labor and Industry","Department of Labor & Industry (L&I)","Nancy Walker","D (appointee)","2023-01 (approx.)","Serves at Governor's pleasure","N/A - appointed","N/A",1,"https://www.pa.gov/agencies/dli","Prevailing wage, workforce development, UC, workers' comp, OSHA consultation"],["EX011","Cabinet","Acting Secretary of General Services","Department of General Services (DGS)","Sandra Aguilera","Nonpartisan/Career","2026-08-01","Serves at Governor's pleasure","N/A - appointed","N/A",1,"https://www.pa.gov/agencies/dgs","NEW. Succeeded Reggie McNeil (departed 2026-07-31). Owns state public building procurement and contracting"],["EX012","Cabinet","Secretary of Transportation","Department of Transportation (PennDOT)","Michael Carroll","D (appointee)","2023-01-12","Serves at Governor's pleasure","N/A - appointed","N/A",1,"https://www.pa.gov/agencies/penndot","Heavy/highway lettings, bridge program, transportation funding"],["EX013","Cabinet","Secretary of Environmental Protection","Department of Environmental Protection (DEP)","Jessica Shirley","Nonpartisan/Career","2023-10 (acting); confirmed 2025-06-25","Serves at Governor's pleasure","N/A - appointed","N/A",1,"https://www.pa.gov/agencies/dep","Owns SPEED permitting program (launched 2025-06-30) - direct schedule impact on member projects"],["EX014","Cabinet","Secretary of Community and Economic Development","Department of Community & Economic Development (DCED)","Rick Siger","D (appointee)","2023-01 (approx.)","Serves at Governor's pleasure","N/A - appointed","N/A",1,"https://www.pa.gov/agencies/dced","RACP, site development, PA SITES program"],["EX015","Cabinet","Secretary of the Budget","Office of the Budget","Zachary Reber","Nonpartisan/Career","2025-12-15","Serves at Governor's pleasure","N/A - appointed","N/A",1,"https://www.pa.gov/agencies/budget","NEW. Succeeded Uri Monson (to PSERS). Owns capital budget and RACP release"],["EX016","Cabinet","Secretary of Revenue","Department of Revenue","Pat Browne","R","2023-06-29","Serves at Governor's pleasure","N/A - appointed","N/A",1,"https://www.pa.gov/agencies/revenue","Former PA Senator (SD-16). CNIT phase-down, construction sales/use tax"],["EX017","Cabinet","Insurance Commissioner","Insurance Department","Michael Humphreys","Nonpartisan/Career","2022 (acting); retained 2023","Serves at Governor's pleasure","N/A - appointed","N/A",2,"https://www.pa.gov/agencies/insurance","Workers' comp rate filings, surety and liability market"],["EX018","Cabinet","Secretary of Education","Department of Education (PDE)","Dr. Carrie Rowe","Nonpartisan/Career","2025-01 (acting); nominated 2025-02-18","Serves at Governor's pleasure","N/A - appointed","N/A",2,"https://www.pa.gov/agencies/education","School construction reimbursement (PlanCon), CTE pipeline"],["EX019","Cabinet","Secretary of Administration","Office of Administration","Neil Weaver","D (appointee)","2023-01 (approx.)","Serves at Governor's pleasure","N/A - appointed","N/A",2,"https://www.pa.gov/agencies/oa",""],["EX020","Cabinet","Secretary of the Commonwealth","Department of State (DOS)","Al Schmidt","R","2023-01-17 (acting); confirmed 2023-06-29","Serves at Governor's pleasure","N/A - appointed","N/A",2,"https://www.pa.gov/agencies/dos","Professional/occupational licensure boards; elections administration"],["EX021","Cabinet","Secretary of Conservation and Natural Resources","Department of Conservation & Natural Resources (DCNR)","Cindy Adams Dunn","D (appointee)","2015-06-02","Serves at Governor's pleasure","N/A - appointed","N/A",2,"https://www.pa.gov/agencies/dcnr","Longest-serving cabinet member. Retained from Wolf administration"],["EX022","Cabinet","Director of Emergency Management","PA Emergency Management Agency (PEMA)","Randy Padfield","Nonpartisan/Career","2019 (approx.)","Serves at Governor's pleasure","N/A - appointed","N/A",2,"https://www.pa.gov/agencies/pema","Disaster recovery construction, emergency contracting"],["EX031","Cabinet","Secretary of Policy and Planning","Governor's Office of Policy & Planning","Akbar Hossain","D (appointee)","2023-01 (approx.)","Serves at Governor's pleasure","N/A - appointed","N/A",2,"https://www.pa.gov/governor","Key channel for administration policy development"],["EX023","Cabinet","Secretary of Agriculture","Department of Agriculture","Russell Redding","D (appointee)","2015-05 (approx.); retained 2023","Serves at Governor's pleasure","N/A - appointed","N/A",3,"https://www.pa.gov/agencies/pda",""],["EX024","Cabinet","Secretary of Banking and Securities","Department of Banking & Securities","Wendy S. Spicher","Nonpartisan/Career","2017 (approx.); retained 2023","Serves at Governor's pleasure","N/A - appointed","N/A",3,"https://www.pa.gov/agencies/dobs",""],["EX025","Cabinet","Secretary of Aging","Department of Aging","Jason Kavulich","D (appointee)","2023 (approx.)","Serves at Governor's pleasure","N/A - appointed","N/A",3,"https://www.pa.gov/agencies/aging",""],["EX026","Cabinet","Secretary of Corrections","Department of Corrections (DOC)","Dr. Laurel R. Harry","Nonpartisan/Career","2023 (approx.)","Serves at Governor's pleasure","N/A - appointed","N/A",3,"https://www.pa.gov/agencies/cor","Correctional facility capital projects"],["EX027","Cabinet","Secretary of Drug and Alcohol Programs","Department of Drug & Alcohol Programs (DDAP)","Dr. Latika Davis-Jones","Nonpartisan/Career","2023 (approx.)","Serves at Governor's pleasure","N/A - appointed","N/A",3,"https://www.pa.gov/agencies/ddap",""],["EX028","Cabinet","Secretary of Health","Department of Health (DOH)","Dr. Debra L. Bogen","Nonpartisan/Career","2023 (approx.)","Serves at Governor's pleasure","N/A - appointed","N/A",3,"https://www.pa.gov/agencies/health",""],["EX029","Cabinet","Secretary of Human Services","Department of Human Services (DHS)","Valerie A. Arkoosh","D (appointee)","2023-01-17 (acting); confirmed 2023-06-29","Serves at Governor's pleasure","N/A - appointed","N/A",3,"https://www.pa.gov/agencies/dhs",""],["EX030","Cabinet","Adjutant General","Department of Military & Veterans Affairs (DMVA)","Maj. Gen. John R. Pippy","R (former legislator)","2024-09-30 (acting); confirmed 2025-02-04","Serves at Governor's pleasure","N/A - appointed","N/A",3,"https://www.pa.gov/agencies/dmva","Former PA House and Senate member. Fort Indiantown Gap capital program"],["EX032","Cabinet","State Fire Commissioner","Office of the State Fire Commissioner","Thomas Cook","Nonpartisan/Career","2023 (approx.)","Serves at Governor's pleasure","N/A - appointed","N/A",3,"https://www.pa.gov/agencies/osfc","Fire and building code interface (UCC)"],["EX033","Cabinet","State Inspector General","Office of State Inspector General","Michelle Henry","D (appointee)","2025 (approx.)","Serves at Governor's pleasure","N/A - appointed","N/A",3,"https://www.pa.gov/agencies/osig","Former PA Attorney General (2023-2025)"],["EX034","Cabinet","Acting State Police Commissioner","PA State Police (PSP)","Lt. Col. George Bivens","Nonpartisan/Career","2025-12-31","Serves at Governor's pleasure","N/A - appointed","N/A",3,"https://www.pa.gov/agencies/psp","NEW. Succeeded Col. Christopher Paris (departed to FBI 2026-01-02)"]]};
+const PARTIES = ['Democratic','Republican','Vacant'];
+const _co = RAW.co, _ci = RAW.ci, _st = RAW.st, _ld = RAW.ld;
+const pad3 = n => String(n).padStart(3, '0');
+const legislators = [];
+RAW.H.forEach(a => {
+const [d, name, p, l, took, yrs, s, cf, r, cn] = a;
+legislators.push({id:'PA-P-H'+pad3(d), seat:'PA-HD-'+pad3(d), ch:'House', dist:d, name,
+party:PARTIES[p], lead:l<0?'':_ld[l], took:took||null, yrs:took?yrs:null, term:2,
+termEnd:'2026-11-30', next:'2026-11-03', ballot:true, status:_st[s],
+conf:cf?'Verified':'Inferred', res:r<0?'':_ci[r], counties:cn.map(i=>_co[i])});
+});
+RAW.S.forEach(a => {
+const [d, name, p, l, took, yrs, s, r, cn, onb] = a;
+legislators.push({id:'PA-P-S'+pad3(d), seat:'PA-SD-'+pad3(d), ch:'Senate', dist:d, name,
+party:PARTIES[p], lead:l<0?'':_ld[l], took, yrs, term:4,
+termEnd:onb?'2026-11-30':'2028-11-30', next:onb?'2026-11-03':'2028-11-07',
+ballot:!!onb, status:_st[s], conf:'Verified', res:r<0?'':_ci[r],
+counties:cn.map(i=>_co[i])});
+});
+const executives = RAW.E.map(a => ({id:'PA-P-'+a[0], ch:'Executive', type:a[1], office:a[2],
+agency:a[3], name:a[4], party:a[5], took:a[6], termEnd:a[7], next:a[8], status:a[9],
+tier:a[10], url:a[11], notes:a[12], counties:[]}));
+const DATA = {snapshot:RAW.snap, map:RAW.map, legislators, executives,
+counties:_co, cities:_ci.slice().sort((x,y)=>x.localeCompare(y))};
+const S = {county:'', city:'', chamber:'', party:'', q:'', ballot:false, open:false, lead:false, tier1:false};
+const OPEN_RE = /retiring|lost primary|vacant/i;
+const $ = s => document.querySelector(s);
+const esc = s => String(s==null?'':s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const ALL = DATA.legislators.concat(DATA.executives);
+const isOpen = p => OPEN_RE.test(p.status || '');
+const onBallot = p => p.ch === 'Executive' ? /2026-11-03/.test(p.next || '') : !!p.ballot;
+const byCounty = {};
+DATA.counties.forEach(c => byCounty[c] = {d:0, r:0, o:0, n:0});
+DATA.legislators.forEach(p => p.counties.forEach(c => {
+const b = byCounty[c]; if (!b) return;
+b.n++;
+if (p.party === 'Democratic') b.d++;
+else if (p.party === 'Republican') b.r++;
+else b.o++;
+}));
+const RED = [190,124,108], MID = [227,222,209], BLUE = [116,150,193];
+function mix(a, b, t){ return a.map((v,i) => Math.round(v + (b[i]-v)*t)); }
+function shade(t){
+const c = t < .5 ? mix(RED, MID, t*2) : mix(MID, BLUE, (t-.5)*2);
+return `rgb(${c[0]},${c[1]},${c[2]})`;
+}
+function countyFill(name){
+const b = byCounty[name];
+if (!b || !b.n) return '#D9D3C6';
+return shade(b.d / (b.d + b.r || 1));
+}
+const map = $('#map');
+const M = DATA.map;
+map.setAttribute('viewBox', `-12 -12 ${M.w+24} ${M.h+24}`);
+let paths = {};
+const frag = document.createDocumentFragment();
+M.counties.forEach(c => {
+const el = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+el.setAttribute('d', c.d);
+el.setAttribute('class', 'county');
+el.setAttribute('fill', countyFill(c.n));
+el.setAttribute('tabindex', '0');
+el.setAttribute('role', 'button');
+const b = byCounty[c.n];
+el.setAttribute('aria-label', `${c.n} County, ${b.n} legislator${b.n===1?'':'s'}`);
+el.dataset.name = c.n;
+frag.appendChild(el);
+paths[c.n] = el;
+});
+map.appendChild(frag);
+const lfrag = document.createDocumentFragment();
+M.counties.filter(c => c.cx !== undefined).forEach(c => {
+const t = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+t.setAttribute('class', 'lbl');
+t.setAttribute('x', c.cx);
+t.setAttribute('y', c.cy + 3);
+t.textContent = c.n;
+lfrag.appendChild(t);
+});
+map.appendChild(lfrag);
+$('#ramp').innerHTML = Array.from({length: 22}, (_, i) =>
+`<i style="background:${shade(i/21)}"></i>`).join('');
+const tip = $('#tip');
+function showTip(e, name){
+const b = byCounty[name];
+tip.innerHTML = `<b>${esc(name)} County</b><br>${b.n} legislator${b.n===1?'':'s'} &middot; ${b.d}D / ${b.r}R${b.o?` / ${b.o} other`:''}`;
+tip.style.left = e.clientX + 'px';
+tip.style.top = e.clientY + 'px';
+tip.style.opacity = '1';
+}
+const hideTip = () => tip.style.opacity = '0';
+map.addEventListener('mousemove', e => {
+const t = e.target.closest('.county');
+if (t) showTip(e, t.dataset.name); else hideTip();
+});
+map.addEventListener('mouseleave', hideTip);
+map.addEventListener('click', e => {
+const t = e.target.closest('.county');
+if (!t) return;
+setCounty(S.county === t.dataset.name ? '' : t.dataset.name);
+});
+map.addEventListener('keydown', e => {
+const t = e.target.closest('.county');
+if (!t || (e.key !== 'Enter' && e.key !== ' ')) return;
+e.preventDefault();
+setCounty(S.county === t.dataset.name ? '' : t.dataset.name);
+});
+function matchesQuery(p, q){
+if (!q) return true;
+const hay = [p.name, p.res, p.office, p.agency, p.lead, p.seat, p.id,
+p.ch, p.party, (p.counties||[]).join(' '),
+p.dist ? ((p.ch === 'House' ? 'HD-' : 'SD-') + p.dist + ' ' + (p.ch === 'House' ? 'HD-' : 'SD-') + String(p.dist).padStart(3,'0')) : '',
+p.dist ? 'district ' + p.dist : ''].filter(Boolean).join(' ').toLowerCase();
+return q.toLowerCase().split(/\s+/).filter(Boolean).every(tok => hay.includes(tok));
+}
+function filtered(){
+return ALL.filter(p => {
+if (S.chamber && p.ch !== S.chamber) return false;
+if (S.county){
+if (p.ch === 'Executive'){ if (S.chamber !== 'Executive') return false; }
+else if (!p.counties.includes(S.county)) return false;
+}
+if (S.city && p.res !== S.city) return false;
+if (S.party){
+const pc = partyClass(p.party);
+if (S.party === 'Democratic' && pc !== 'd') return false;
+if (S.party === 'Republican' && pc !== 'r') return false;
+if (S.party === 'Other' && pc !== 'v') return false;
+}
+if (S.ballot && !onBallot(p)) return false;
+if (S.open && !isOpen(p)) return false;
+if (S.lead && !(p.lead || p.ch === 'Executive')) return false;
+if (S.tier1 && !(p.ch === 'Executive' && p.tier === 1)) return false;
+if (!matchesQuery(p, S.q)) return false;
+return true;
+});
+}
+function partyClass(party){
+if (/^D/.test(party || '')) return 'd';
+if (/^R/.test(party || '')) return 'r';
+return 'v';
+}
+function partyShort(party){
+if (/^Democratic$/.test(party)) return 'Dem';
+if (/^Republican$/.test(party)) return 'Rep';
+return party || '-';
+}
+function rowHTML(p, i){
+const pc = partyClass(p.party);
+const tags = [];
+if (p.lead) tags.push(`<span class="pill lead">${esc(p.lead)}</span>`);
+if (p.ch === 'Executive' && p.tier) tags.push(`<span class="pill tier${p.tier}">Tier ${p.tier}</span>`);
+if (onBallot(p)) tags.push('<span class="pill ballot">2026 ballot</span>');
+tags.push(`<span class="pill ${pc}">${esc(partyShort(p.party))}</span>`);
+let seat, nm, sc, detail;
+if (p.ch === 'Executive'){
+seat = `<span class="seat">EXEC<small>Statewide</small></span>`;
+nm = esc(p.name);
+sc = esc(p.office);
+detail = `<dl class="dl">
+<div><dt>Agency</dt><dd>${esc(p.agency)}</dd></div>
+<div><dt>Took office</dt><dd class="mono">${esc(p.took)}</dd></div>
+<div><dt>Term end</dt><dd>${esc(p.termEnd)}</dd></div>
+<div><dt>Next election</dt><dd class="mono">${esc(p.next)}</dd></div>
+<div><dt>2026 status</dt><dd>${esc(p.status)}</dd></div>
+<div><dt>Selection</dt><dd>${esc(p.type)}</dd></div>
+<div><dt>GBCA relevance</dt><dd>Tier ${p.tier}</dd></div>
+<div><dt>Record</dt><dd class="mono">${esc(p.id)}</dd></div>
+<div><dt>Official site</dt><dd><a href="${esc(p.url)}" target="_blank" rel="noopener">${esc(p.url.replace(/^https?:\/\//,''))}</a></dd></div>
+</dl>${p.notes ? `<p class="note">${esc(p.notes)}</p>` : ''}`;
+} else {
+const code = (p.ch === 'House' ? 'HD' : 'SD') + '-' + String(p.dist).padStart(3,'0');
+seat = `<span class="seat">${code}<small>${p.ch}</small></span>`;
+nm = p.party === 'Vacant' ? 'Vacant seat' : esc(p.name);
+sc = (p.res ? esc(p.res) + ' &middot; ' : '') + p.counties.map(esc).join(', ') +
+(p.counties.length > 1 ? ' counties' : ' County');
+detail = `<dl class="dl">
+<div><dt>Seat</dt><dd class="mono">${esc(p.seat)}</dd></div>
+<div><dt>Took office</dt><dd class="mono">${p.took ?? '-'}</dd></div>
+<div><dt>Years of service</dt><dd class="mono">${p.yrs ?? '-'}</dd></div>
+<div><dt>Term length</dt><dd>${p.term} years</dd></div>
+<div><dt>Current term ends</dt><dd class="mono">${esc(p.termEnd)}</dd></div>
+<div><dt>Next election</dt><dd class="mono">${esc(p.next)}</dd></div>
+<div><dt>2026 status</dt><dd>${esc(p.status)}</dd></div>
+<div><dt>Status confidence</dt><dd>${esc(p.conf)}</dd></div>
+<div><dt>Record</dt><dd class="mono">${esc(p.id)}</dd></div>
+</dl>${p.conf === 'Inferred' ? '<p class="note">2026 status is inferred, not individually verified. Confirm before citing externally.</p>' : ''}`;
+}
+return `<li class="row" data-i="${i}">
+<button class="rowbtn" aria-expanded="false">
+${seat}
+<span class="who"><span class="nm">${nm}</span><span class="sc">${sc}</span></span>
+<span class="tags">${tags.join('')}</span>
+</button>
+<div class="detail">${detail}</div>
+</li>`;
+}
+function render(){
+const res = filtered();
+DATA.counties.forEach(c => {
+const el = paths[c];
+el.classList.toggle('sel', S.county === c);
+el.classList.toggle('dim', !!S.county && S.county !== c);
+});
+document.querySelectorAll('#seRegion .chip').forEach(b =>
+b.setAttribute('aria-pressed', String(b.dataset.c === S.county)));
+const d = res.filter(p => partyClass(p.party) === 'd').length;
+const r = res.filter(p => partyClass(p.party) === 'r').length;
+const o = res.length - d - r;
+$('#selTitle').textContent = S.county ? S.county + ' County' : 'All Pennsylvania';
+$('#selKicker').textContent = S.county ? 'County delegation' : 'Statewide roster';
+const bits = [];
+if (S.county){
+const b = byCounty[S.county];
+bits.push(`${b.n} legislator${b.n===1?'':'s'} represent all or part of this county`);
+} else {
+bits.push('203 House seats, 50 Senate seats, 30 executive branch officials');
+}
+$('#selMeta').textContent = bits.join(' ');
+const split = $('#selSplit');
+if (res.length){
+split.hidden = false;
+split.innerHTML =
+`<i style="flex:${d};background:var(--dem)"></i>` +
+`<i style="flex:${r};background:var(--rep)"></i>` +
+`<i style="flex:${o};background:var(--vac)"></i>`;
+} else split.hidden = true;
+$('#selCounts').innerHTML =
+`<span style="color:var(--dem)">${d} Dem</span><br>` +
+`<span style="color:var(--rep)">${r} Rep</span><br>` +
+`<span style="color:var(--vac)">${o} other</span>`;
+$('#tD').textContent = d;
+$('#tR').textContent = r;
+$('#tO').textContent = o;
+$('#tB').textContent = res.filter(onBallot).length;
+$('#tOpen').textContent = res.filter(isOpen).length;
+$('#resultCount').textContent = res.length + (res.length === 1 ? ' record' : ' records');
+const order = ['Senate','House','Executive'];
+const wrap = $('#results');
+if (!res.length){
+wrap.innerHTML = `<div class="empty"><b>No officials match these filters.</b>
+Widen the search, or clear all filters to return to the full roster.</div>`;
+return;
+}
+const idx = new Map(res.map((p, i) => [p, i]));
+let html = '';
+order.forEach(ch => {
+const grp = res.filter(p => p.ch === ch);
+if (!grp.length) return;
+grp.sort((a, b) => ch === 'Executive'
+? (a.tier - b.tier) || a.office.localeCompare(b.office)
+: a.dist - b.dist);
+html += `<div class="grp"><div class="grp-label"><span>${ch === 'Executive' ? 'Executive branch' : 'PA ' + ch}</span><span>${grp.length}</span></div>
+<ul class="rows">${grp.map(p => rowHTML(p, idx.get(p))).join('')}</ul></div>`;
+});
+wrap.innerHTML = html;
+}
+$('#results').addEventListener('click', e => {
+const btn = e.target.closest('.rowbtn');
+if (!btn) return;
+const row = btn.parentElement;
+const open = row.classList.toggle('open');
+btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+});
+function setCounty(name){
+S.county = name;
+$('#fcounty').value = name;
+render();
+if (name && window.innerWidth <= 1080){
+$('#selTitle').scrollIntoView({behavior:'smooth', block:'start'});
+}
+}
+const cSel = $('#fcounty');
+DATA.counties.forEach(c => {
+const o = document.createElement('option');
+o.value = c; o.textContent = `${c} (${byCounty[c].n})`;
+cSel.appendChild(o);
+});
+const citySel = $('#fcity');
+DATA.cities.forEach(c => {
+const o = document.createElement('option');
+o.value = c; o.textContent = c;
+citySel.appendChild(o);
+});
+cSel.addEventListener('change', () => setCounty(cSel.value));
+$('#seRegion').addEventListener('click', e => {
+const b = e.target.closest('.chip');
+if (!b) return;
+setCounty(S.county === b.dataset.c ? '' : b.dataset.c);
+});
+citySel.addEventListener('change', () => { S.city = citySel.value; render(); });
+let qt;
+$('#q').addEventListener('input', e => {
+clearTimeout(qt);
+qt = setTimeout(() => { S.q = e.target.value.trim(); render(); }, 120);
+});
+function chipGroup(sel, key){
+const box = $(sel);
+box.addEventListener('click', e => {
+const b = e.target.closest('.chip');
+if (!b) return;
+box.querySelectorAll('.chip').forEach(c => c.setAttribute('aria-pressed', String(c === b)));
+S[key] = b.dataset.v;
+render();
+});
+}
+chipGroup('#fchamber', 'chamber');
+chipGroup('#fparty', 'party');
+[['#fballot','ballot'], ['#fopen','open'], ['#flead','lead'], ['#ftier','tier1']].forEach(([sel, key]) => {
+$(sel).addEventListener('change', e => { S[key] = e.target.checked; render(); });
+});
+$('#reset').addEventListener('click', () => {
+Object.assign(S, {county:'', city:'', chamber:'', party:'', q:'', ballot:false, open:false, lead:false, tier1:false});
+$('#q').value = ''; cSel.value = ''; citySel.value = '';
+document.querySelectorAll('#fchamber .chip, #fparty .chip').forEach(c =>
+c.setAttribute('aria-pressed', String(c.dataset.v === '')));
+document.querySelectorAll('.switch input').forEach(c => c.checked = false);
+render();
+});
+$('#snapdate').textContent = DATA.snapshot;
+$('#tbdate').textContent = DATA.snapshot;
+$('#tbHouse').textContent = DATA.legislators.filter(p => p.ch === 'House').length;
+$('#tbSen').textContent = DATA.legislators.filter(p => p.ch === 'Senate').length;
+$('#tbExec').textContent = DATA.executives.length;
+render();</script>
+</body>
+</html>

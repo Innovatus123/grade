@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>GBCA Government Relations &amp; Advocacy Data Engine - Sheet index</title>
+<style>
+:root{
+  --ink:#1a1a19; --ink-2:#4a4a46; --ink-3:#7a7a72;
+  --rule:#dedbd2; --rule-2:#efece4; --paper:#fbfaf7; --card:#ffffff;
+  --accent:#7c2d12; --accent-soft:#fdf4ee;
+  --mono:"SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;
+  --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:15px;
+  line-height:1.55;-webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+.wrap{max-width:1120px;margin:0 auto;padding:0 28px}
+
+header.mast{border-bottom:2px solid var(--ink);background:var(--card)}
+.mast .wrap{display:flex;justify-content:space-between;align-items:flex-end;
+  padding:22px 28px 14px;gap:24px;flex-wrap:wrap}
+.org{font-family:var(--serif);font-size:20px}
+.brand{font-size:11px;text-transform:uppercase;letter-spacing:.14em;color:var(--ink-3);
+  margin-top:3px}
+.mast .meta{font-size:11px;color:var(--ink-3);text-align:right;line-height:1.7}
+
+.lede{background:var(--card);border-bottom:1px solid var(--rule)}
+.lede .wrap{padding:30px 28px 34px;max-width:1120px}
+.lede h1{font-family:var(--serif);font-weight:500;font-size:27px;margin:0 0 10px}
+.lede p{margin:0;max-width:760px;font-size:15px;line-height:1.7;color:var(--ink-2)}
+
+main{padding:34px 0 10px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(285px,1fr));gap:18px}
+.card{background:var(--card);border:1px solid var(--rule);border-radius:3px;
+  padding:20px 22px 18px;display:flex;flex-direction:column}
+.card .sid{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;color:var(--ink-3);
+  text-transform:uppercase}
+.card h2{font-family:var(--serif);font-weight:500;font-size:21px;margin:5px 0 9px}
+.card p{margin:0 0 15px;font-size:13.5px;line-height:1.6;color:var(--ink-2);flex:1}
+.figs{display:grid;grid-template-columns:1fr 1fr;gap:9px 16px;border-top:1px solid var(--rule-2);
+  padding-top:13px;margin-bottom:15px}
+.fig .n{font-family:var(--serif);font-size:18px;line-height:1.1}
+.fig .l{font-size:10px;text-transform:uppercase;letter-spacing:.09em;color:var(--ink-3);
+  margin-top:2px}
+.open{font-size:13px;font-weight:600}
+.card.new{border-color:var(--accent)}
+.card.new .sid::after{content:"New";margin-left:8px;background:var(--accent);color:#fff;
+  border-radius:2px;padding:1px 5px;letter-spacing:.06em}
+
+section.findings{margin-top:40px;background:var(--card);border:1px solid var(--rule);
+  border-radius:3px;padding:26px 28px}
+section.findings h2{font-family:var(--serif);font-weight:500;font-size:20px;margin:0 0 18px}
+.flist{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:22px}
+.f .n{font-family:var(--serif);font-size:26px;color:var(--accent);line-height:1.1}
+.f p{margin:6px 0 0;font-size:13.5px;line-height:1.6;color:var(--ink-2)}
+
+section.src{margin-top:34px}
+section.src h2,section.cav h2{font-family:var(--serif);font-weight:500;font-size:20px;
+  margin:0 0 12px}
+table{width:100%;border-collapse:collapse;background:var(--card);border:1px solid var(--rule)}
+th{text-align:left;font-size:10.5px;text-transform:uppercase;letter-spacing:.1em;
+  color:var(--ink-3);font-weight:600;padding:9px 14px;background:var(--rule-2);
+  border-bottom:1px solid var(--rule)}
+td{padding:9px 14px;border-bottom:1px solid var(--rule-2);font-size:13.5px;color:var(--ink-2)}
+tr:last-child td{border-bottom:none}
+
+section.cav{margin-top:34px}
+.cav .box{background:var(--card);border:1px solid var(--rule);border-left:3px solid var(--accent);
+  padding:18px 22px}
+.cav .box p{margin:0 0 11px;font-size:13.5px;line-height:1.65;color:var(--ink-2)}
+.cav .box p:last-child{margin-bottom:0}
+.cav .box strong{color:var(--ink)}
+
+footer{border-top:1px solid var(--rule);margin-top:44px;padding:22px 0 50px;font-size:11.5px;
+  color:var(--ink-3);line-height:1.75}
+@media (max-width:640px){.wrap{padding:0 16px}.mast .wrap{padding:20px 16px 12px}
+  .lede .wrap{padding:24px 16px 26px}}
+</style>
+</head>
+<body>
+
+<header class="mast">
+  <div class="wrap">
+    <div>
+      <div class="org">General Building Contractors Association</div>
+      <div class="brand">Government Relations &amp; Advocacy Data Engine</div>
+    </div>
+    <div class="meta">Sheet index<br>Data as of 2026-08-20 &middot; Rev 004</div>
+  </div>
+</header>
+
+<div class="lede">
+  <div class="wrap">
+    <h1>Pennsylvania political intelligence</h1>
+    <p>Four sheets built from public filings: who holds office, who funds them, whose money it
+    actually is once you trace it through the PACs, and what they are all voting on. Every figure
+    is derived from primary sources with its method and confidence recorded &mdash; open any sheet's
+    <em>Method &amp; limits</em> tab before citing a number externally.</p>
+  </div>
+</div>
+
+<main class="wrap">
+  <div class="cards"><article class="card"><div class="sid">Sheet LT-01</div><h2>Delegation Map</h2><p>Every PA House, Senate and executive branch official, mapped by county. Filter by body, party, municipality, 2026 ballot status, leadership post or agency tier.</p><div class="figs"><div class="fig"><div class="n">203</div><div class="l">House</div></div><div class="fig"><div class="n">50</div><div class="l">Senate</div></div><div class="fig"><div class="n">30</div><div class="l">Executive</div></div><div class="fig"><div class="n">67</div><div class="l">Counties</div></div></div><a class="open" href="PA_Delegation_Map.html">Open sheet →</a></article><article class="card"><div class="sid">Sheet LT-02</div><h2>Contributions Index</h2><p>The summary view. Corporate versus individual split by politician, money by industry, the PAC funding chains, and the full method and limitations record.</p><div class="figs"><div class="fig"><div class="n">$1.007B</div><div class="l">Tracked</div></div><div class="fig"><div class="n">3.01M</div><div class="l">Contributions</div></div><div class="fig"><div class="n">2024–26</div><div class="l">Filing years</div></div></div><a class="open" href="PA_Political_Contributions_Index.html">Open sheet →</a></article><article class="card"><div class="sid">Sheet LT-03</div><h2>Contributions Explorer</h2><p>The complete record. Search any politician or any donor, then walk the network in either direction — who funded them, and who else that donor funds.</p><div class="figs"><div class="fig"><div class="n">1,347</div><div class="l">Politicians</div></div><div class="fig"><div class="n">315,029</div><div class="l">Donors</div></div><div class="fig"><div class="n">165,907</div><div class="l">Links</div></div></div><a class="open" href="PA_Political_Contributions_Explorer.html">Open sheet →</a></article><article class="card new"><div class="sid">Sheet LT-04</div><h2>Legislation Index</h2><p>Every bill and resolution of four Pennsylvania legislative sessions, 2019-2020 through 2025-2026, each clickable through to its record — and linked in both directions to the members who sponsored it. Switch sessions from the header.</p><div class="figs"><div class="fig"><div class="n">20,101</div><div class="l">Measures</div></div><div class="fig"><div class="n">954</div><div class="l">Enacted as Acts</div></div><div class="fig"><div class="n">85,447</div><div class="l">Sponsor links</div></div><div class="fig"><div class="n">2019–26</div><div class="l">4 sessions</div></div></div><a class="open" href="PA_Legislation_Map.html">Open sheet →</a></article></div>
+
+  <section class="findings">
+    <h2>Three findings that shape everything else</h2>
+    <div class="flist"><div class="f"><div class="n">$71.25M</div><p>traced to a single individual — Jeffrey Yass — across 17 vehicles and up to five hops of PAC-to-PAC transfer, against $33.79M given directly. No other traced origin exceeds $1.5M.</p></div><div class="f"><div class="n">10 to 1</div><p>the ratio by which building trades labor ($29.7M) outspends construction contracting ($3.1M) in Pennsylvania politics — inside GBCA's own industry.</p></div><div class="f"><div class="n">85,447</div><p>sponsor signatures now resolve to a named member and district across 4,598 measures in four sessions, covering everything that passed a chamber, was vetoed, or was enacted. 1,748 measures touch construction, labor or procurement directly — an eight-year record of who signed what.</p></div></div>
+  </section>
+
+  <section class="src">
+    <h2>Sources</h2>
+    <table>
+      <thead><tr><th>Jurisdiction</th><th>Source</th><th>Refresh</th></tr></thead>
+      <tbody><tr><td>Pennsylvania</td><td>Dept. of State full campaign finance export</td><td>Periodic restatement</td></tr><tr><td>Philadelphia</td><td>City campfin_contributions API</td><td>Near real time</td></tr><tr><td>Federal</td><td>FEC bulk files, filtered to PA</td><td>Weekly (Sunday)</td></tr><tr><td>Officeholders</td><td>PA General Assembly and pa.gov, cross-verified</td><td>Weekly</td></tr><tr><td>Legislation</td><td>PA General Assembly record, harvested via LegiScan</td><td>Per session sitting</td></tr><tr><td>Prior sessions</td><td>Same pipeline, seats corrected to the session being described</td><td>Once, on load</td></tr></tbody>
+    </table>
+  </section>
+
+  <section class="cav">
+    <h2>Before citing any figure</h2>
+    <div class="box"><p><strong>Donor classification is derived.</strong> No jurisdiction publishes a reliable corporate-versus-individual flag — Pennsylvania has no such field, Philadelphia's is 92% unspecified, and only the FEC's entity code is dependable. Every row carries its method and a confidence score.</p><p><strong>Totals use primary rows only.</strong> 47% of Philadelphia dollars duplicate a Pennsylvania state row for committees that file in both places. Duplicates are flagged, never deleted.</p><p><strong>Donor entities are deliberately under-merged.</strong> A wrong merge invents an influence claim, so borderline matches go to a review queue instead. Every donor total is a floor, not a ceiling.</p><p><strong>Sponsor coverage on LT-04 is partial by design.</strong> Every measure of all four sessions is listed, but full cosponsor rosters are loaded for the measures that passed a chamber, were vetoed, or were enacted. The sheet marks which is which; it does not present partial coverage as complete.</p><p><strong>A district does not name the same person in every session.</strong> LT-04's historical sessions identify members from the bill records of that session, not from today's roster. The source stamps each sponsor with the seat they hold now, so 11 members who have since changed chamber are remapped to the seat they actually held, each verified against two independent sources. A seat that changed hands mid-session names everyone who sponsored from it. Do not read a historical district as the member who holds it now.</p><p><strong>LT-04's two oldest sessions predate the current district map.</strong> 2021-2022 and 2019-2020 ran under the pre-2022 legislative map. Those district numbers do not describe the same ground as today's — HD-189 then is not HD-189 now. The sheet therefore withholds county geography and current-occupant labels for those two sessions rather than joining data across incompatible maps. Treat a district number there as a label for a person, not a place.</p></div>
+  </section>
+</main>
+
+<footer class="wrap">
+  Compiled by GBCA Government Relations &amp; Advocacy Data Engine (GRADE) from public campaign finance and legislative filings. Coverage runs through the Pennsylvania campaign finance export dated 2026-07-24 and the 2019-2020, 2021-2022, 2023-2024 and 2025-2026 legislative records as of 2026-08-20.<br>
+  Sheets regenerate from source; see <span style="font-family:var(--mono)">07_Claude_Instructions/</span>
+  for the build and retention rules.
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PA Political Contributions Index &mdash; GBCA</title>
+<style>
+:root{
+  --ink:#12161c; --ink2:#3d4854; --mut:#6b7785; --line:#c9d1da; --line2:#e4e9ef;
+  --paper:#f4f2ed; --card:#fffdfa; --accent:#1f3864; --accent2:#8a6a1f;
+  --org:#1f3864; --ind:#8a6a1f; --unres:#9aa5b1;
+  --pos:#2f6b4f; --neg:#8c3a2e;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);
+  font-family:"Inter","Helvetica Neue",Arial,sans-serif;font-size:14px;line-height:1.5}
+.sheet{max-width:1280px;margin:22px auto;background:var(--card);
+  border:1.5px solid var(--ink);box-shadow:0 2px 0 var(--line)}
+header.tb{border-bottom:1.5px solid var(--ink);padding:16px 22px;display:flex;
+  justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap}
+.org{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--mut)}
+.brand{font-size:19px;font-weight:700;letter-spacing:.02em;margin-top:3px}
+h1{font-size:26px;margin:10px 0 2px;font-weight:700;letter-spacing:-.01em}
+.sub{color:var(--mut);font-size:12.5px}
+.stamp{border:1px solid var(--line);font-size:11px;min-width:230px}
+.stamp div{display:flex;justify-content:space-between;padding:5px 9px;
+  border-bottom:1px solid var(--line2)}
+.stamp div:last-child{border-bottom:0}
+.stamp b{font-weight:600}
+nav{display:flex;gap:2px;padding:0 22px;border-bottom:1px solid var(--line);
+  background:#faf8f4;flex-wrap:wrap}
+nav button{border:0;background:none;padding:11px 14px;font-size:13px;cursor:pointer;
+  color:var(--ink2);border-bottom:2.5px solid transparent;font-family:inherit}
+nav button:hover{color:var(--ink)}
+nav button[aria-selected="true"]{color:var(--accent);border-bottom-color:var(--accent);
+  font-weight:600}
+main{padding:20px 22px 30px}
+section[hidden]{display:none}
+.plate{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--mut);
+  border-bottom:1px solid var(--line2);padding-bottom:7px;margin:0 0 16px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(168px,1fr));gap:12px;
+  margin-bottom:22px}
+.kpi{border:1px solid var(--line);padding:12px 14px;background:#fff}
+.kpi .l{font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--mut)}
+.kpi .v{font-size:23px;font-weight:700;margin-top:5px;font-variant-numeric:tabular-nums}
+.kpi .n{font-size:11.5px;color:var(--mut);margin-top:2px}
+h2{font-size:15px;margin:26px 0 10px;font-weight:700}
+h2:first-of-type{margin-top:0}
+p.note{color:var(--ink2);font-size:13px;max-width:76ch;margin:0 0 14px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:left;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--mut);border-bottom:1.5px solid var(--ink);padding:7px 9px;
+  position:sticky;top:0;background:var(--card);cursor:pointer;white-space:nowrap}
+th.na{cursor:default}
+td{padding:7px 9px;border-bottom:1px solid var(--line2);vertical-align:middle}
+tr:hover td{background:#f7f4ee}
+.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.wrap{max-height:560px;overflow:auto;border:1px solid var(--line)}
+.bar{height:9px;background:var(--line2);position:relative;min-width:70px}
+.bar i{position:absolute;left:0;top:0;bottom:0;background:var(--accent)}
+.split{display:flex;height:11px;min-width:120px;border:1px solid var(--line2)}
+.split i{display:block;height:100%}
+.lg{display:flex;gap:16px;font-size:12px;color:var(--ink2);margin:8px 0 14px;
+  flex-wrap:wrap;align-items:center}
+.lg span{display:inline-flex;align-items:center;gap:6px}
+.sw{width:11px;height:11px;display:inline-block;border:1px solid rgba(0,0,0,.15)}
+.call{border-left:3px solid var(--accent);background:#f5f7fb;padding:13px 16px;
+  margin:0 0 18px;font-size:13.5px}
+.call b{color:var(--accent)}
+.chain{font-family:"SF Mono",Menlo,Consolas,monospace;font-size:12px;line-height:1.9}
+.hop{display:inline-block;border:1px solid var(--line);background:#fff;padding:2px 8px;
+  margin:2px 0}
+.hop.src{border-color:var(--accent2);background:#fdf8ec;font-weight:600}
+.arr{color:var(--mut);padding:0 5px}
+.pill{display:inline-block;font-size:10.5px;padding:1px 7px;border:1px solid var(--line);
+  border-radius:9px;color:var(--ink2);white-space:nowrap}
+.ctl{display:flex;gap:9px;margin-bottom:11px;flex-wrap:wrap}
+input[type=search],select{border:1px solid var(--line);padding:7px 10px;font-size:13px;
+  font-family:inherit;background:#fff;color:var(--ink)}
+input[type=search]{min-width:230px}
+footer{border-top:1px solid var(--line);padding:14px 22px;font-size:11.5px;
+  color:var(--mut);background:#faf8f4}
+footer p{margin:5px 0}
+@media(max-width:720px){.stamp{min-width:0;width:100%}h1{font-size:21px}}
+</style></head><body>
+<div class="sheet">
+<header class="tb">
+  <div>
+    <div class="org">General Building Contractors Association</div>
+    <div class="brand">Government Relations &amp; Advocacy Data Engine</div>
+    <h1>Pennsylvania Political Contributions Index</h1>
+    <div class="sub">Filing years 2024&ndash;2026 &middot; PA Dept. of State, City of Philadelphia, FEC &middot;
+      Source: 13_Political_Contributions</div>
+  </div>
+  <div class="stamp">
+    <div><span>Drawing</span><b>PA Political Money &mdash; Index</b></div>
+    <div><span>Sheet</span><b>LT-02</b></div>
+    <div><span>Prepared for</span><b>GBCA</b></div>
+    <div><span>Data as of</span><b>2026-08-04</b></div>
+    <div><span>Rev</span><b>001</b></div>
+  </div>
+</header>
+<nav>
+  <button data-t="ov" aria-selected="true">Overview</button>
+  <button data-t="pol">Politicians</button>
+  <button data-t="dnr">Donors</button>
+  <button data-t="ind">Industry</button>
+  <button data-t="src">Money chains</button>
+  <button data-t="mth">Method &amp; limits</button>
+</nav>
+<main>
+<section id="ov">
+  <p class="plate">Plate 01 &mdash; Position summary</p>
+  <div class="kpis" id="kpis"></div>
+  <div class="call"><b>Two findings drive everything else.</b> First, one individual &mdash;
+    Jeffrey Yass &mdash; is the ultimate source of <b>$71.25M</b> reaching Pennsylvania
+    politicians across 17 vehicles and up to 5 hops of PAC-to-PAC transfer, against
+    $33.79M in direct giving. Second, <b>building trades labor outspends construction
+    contracting roughly 10 to 1</b> ($29.7M vs $3.1M). If GBCA members are outspent by an
+    order of magnitude on the labor side of their own industry, that is a board-level fact.</div>
+  <h2>Why the organizational / individual split is the primary axis</h2>
+  <p class="note">Pennsylvania bars corporations from contributing directly to candidates
+    (25 P.S. &sect; 3253). Corporate money must move through a separate segregated fund, so at
+    state level it almost never <em>looks</em> corporate &mdash; it arrives as PAC money.
+    That is why this sheet carries a sponsor-tracing layer: without it, corporate influence
+    is structurally invisible.</p>
+  <div class="lg">
+    <span><i class="sw" style="background:var(--org)"></i> Organizational (corporate, PAC, union, party)</span>
+    <span><i class="sw" style="background:var(--ind)"></i> Individual</span>
+    <span><i class="sw" style="background:var(--unres)"></i> Unresolved</span>
+  </div>
+  <table id="tJur"><thead><tr><th class="na">Split</th><th class="na">Amount</th>
+    <th class="na">Share</th><th class="na"></th></tr></thead><tbody>
+    <tr><td>Organizational</td><td class="num">$548,471,533</td>
+      <td class="num">54.5%</td>
+      <td><div class="bar"><i style="width:54.5%;background:var(--org)"></i></div></td></tr>
+    <tr><td>Individual</td><td class="num">$447,446,720</td>
+      <td class="num">44.4%</td>
+      <td><div class="bar"><i style="width:44.4%;background:var(--ind)"></i></div></td></tr>
+    <tr><td>Unresolved</td><td class="num">$10,941,332</td>
+      <td class="num">1.1%</td>
+      <td><div class="bar"><i style="width:1.1%;background:var(--unres)"></i></div></td></tr>
+  </tbody></table>
+</section>
+
+<section id="pol" hidden>
+  <p class="plate">Plate 02 &mdash; Money received, by politician (all vehicles, all years)</p>
+  <p class="note">One row per politician, not per committee. PA re-issues candidate filer IDs
+    every election year and a politician often files under several vehicles at once; these are
+    consolidated. Sort any column; the split bar shows organizational versus individual.</p>
+  <div class="ctl">
+    <input type="search" id="q" placeholder="Filter by name&hellip;" aria-label="Filter politicians">
+    <select id="pf" aria-label="Filter by party"><option value="">All parties</option>
+      <option>DEM</option><option>REP</option></select>
+  </div>
+  <div class="lg"><span><i class="sw" style="background:var(--org)"></i> Organizational</span>
+    <span><i class="sw" style="background:var(--ind)"></i> Individual</span></div>
+  <div class="wrap"><table id="tPol"><thead><tr><th>Politician</th><th>Office</th><th>Party</th>
+    <th>Total</th><th class="na">Split</th><th>Org %</th><th>Donors</th><th class="na"></th>
+  </tr></thead><tbody></tbody></table></div>
+</section>
+
+<section id="dnr" hidden>
+  <p class="plate">Plate 03 &mdash; Largest donors, after entity resolution</p>
+  <p class="note">Name variants are collapsed &mdash; &ldquo;Jeff Yass&rdquo;,
+    &ldquo;Jeffrey Yass&rdquo; and &ldquo;Jeffery Yass&rdquo; are one entity. 48 of the top
+    100 donors were fragmented across spellings before this step, so any ranking built on raw
+    names was wrong.</p>
+  <h2>Organizational donors</h2>
+  <div class="wrap"><table id="tOrg"><thead><tr><th>Entity</th><th>Total given</th>
+    <th>Recipients</th><th class="na"></th></tr></thead><tbody></tbody></table></div>
+  <h2>Individual donors</h2>
+  <div class="wrap"><table id="tInd"><thead><tr><th>Entity</th><th>Total given</th>
+    <th>Recipients</th><th class="na"></th></tr></thead><tbody></tbody></table></div>
+</section>
+
+<section id="ind" hidden>
+  <p class="plate">Plate 04 &mdash; Organizational money by industry</p>
+  <div class="call"><b>The construction read.</b> Building trades labor gave
+    <b>$29.7M</b>; construction contracting gave <b>$3.1M</b>. Roughly ten to one, inside
+    GBCA's own industry.</div>
+  <p class="note">Industry is derived from the sponsoring organization behind each PAC, not
+    from the PAC's own name. &ldquo;Unclassified&rdquo; is mostly party committees and
+    candidate-to-candidate transfers, which have no industry &mdash; but some of it is
+    genuinely untagged and is the main place this layer can still be improved.</p>
+  <div class="wrap"><table id="tInd2"><thead><tr><th>Industry</th><th>Total given</th>
+    <th>PACs</th><th class="na"></th></tr></thead><tbody></tbody></table></div>
+</section>
+
+<section id="src" hidden>
+  <p class="plate">Plate 05 &mdash; Following money through the PAC network</p>
+  <p class="note">Most large Pennsylvania PACs are <em>non-connected</em> &mdash; they have no
+    corporate sponsor by design, so &ldquo;who sponsors it&rdquo; is the wrong question. The
+    right one is who funds them, and because those PACs are themselves recipients in this
+    dataset, the answer was already in the data. Where one funder supplies 50% or more of a
+    PAC's receipts, that becomes a directed edge and the chain is walked to its origin.</p>
+  <h2>Money traced to an ultimate source</h2>
+  <div class="wrap"><table id="tSrc"><thead><tr><th>Ultimate source</th><th>Type</th>
+    <th>$ to politicians</th><th>Vehicles</th><th>Max hops</th></tr></thead><tbody></tbody></table></div>
+  <h2>Chains</h2>
+  <p class="note">Read right to left: the highlighted box is the origin.</p>
+  <div id="chains"></div>
+</section>
+
+<section id="mth" hidden>
+  <p class="plate">Plate 06 &mdash; Method, and what not to trust</p>
+  <h2>Sources</h2>
+  <p class="note">PA Department of State full campaign finance export &middot; City of
+    Philadelphia <code>campfin_contributions</code> &middot; FEC bulk files filtered to
+    Pennsylvania. 3,157,741 rows ingested, 3,014,777 after removing cross-jurisdiction
+    duplicates, 1,287 reporting rollup lines excluded.</p>
+  <h2>Four things to know before quoting any number</h2>
+  <p class="note"><b>1. All donor classification is derived.</b> No jurisdiction publishes a
+    reliable corporate-versus-individual flag. PA has no such field at all; Philadelphia's is
+    92% &ldquo;Not Specified&rdquo;; only the FEC's entity code is dependable. Every row
+    carries the method and a confidence score.</p>
+  <p class="note"><b>2. Totals are taken on primary rows only.</b> 47% of Philadelphia
+    dollars duplicate a PA state row for committees that file in both places. Duplicates are
+    flagged, not deleted.</p>
+  <p class="note"><b>3. Entities are deliberately under-merged.</b> A wrong merge produces a
+    fabricated influence claim, so borderline matches go to a review queue instead. A donor's
+    resolved total is a floor, not a ceiling.</p>
+  <p class="note"><b>4. Chains use a 50% dominance threshold.</b> A PAC funded 45/45/10 by
+    three sources has no chain edge and reads as its own origin.</p>
+  <h2>Defects found by auditing output</h2>
+  <p class="note">Every meaningful error in this build was caught by checking results, not by
+    reasoning about the design. Four Williamses merged into one donor. A Reading PA
+    &ldquo;John M. Arnold&rdquo; folded into the Houston megadonor. Comma-stripping reversed
+    every federal name, so <code>FITZPATRICK, BRIAN</code> parsed as first-name Fitzpatrick
+    and federal records never matched their PA counterparts. Regexes ending in a word
+    boundary meant <code>CARPENTER</code> never matched &ldquo;CARPENTERS&rdquo;, and building
+    trades money read $8.1M instead of $29.7M. The FEC's connected-organization field is
+    free text for some filers and attributed Commonwealth Leaders Fund to a sponsor named
+    &ldquo;DEATON&rdquo; &mdash; a $16M misattribution.</p>
+</section>
+</main>
+<footer>
+  <p>Compiled by GBCA Government Relations & Advocacy Data Engine from public campaign finance filings.
+     Coverage runs through the PA export dated 2026-07-24; later filings are not included.</p>
+  <p>Derived classifications carry confidence scores &mdash; filter on them before citing any
+     figure externally. Refresh monthly, and within one week of each PA reporting deadline.</p>
+</footer>
+</div>
+<script>
+const D = {"kpi": {"total": 1006859585.28, "n": 3013500, "ind": 447446719.92999995, "org": 548471533.3499999, "unres": 10941332.0, "entities": 315029, "pols": 1347, "variants": 350759, "vehicles": 2039, "pols_recv": 765}, "pol": [{"politician_name": "SHAPIRO, JOSHUA D", "offices": "GOV", "party": "DEM", "total": 50206685.46, "INDIVIDUAL": 38501971.37, "ORGANIZATIONAL": 11704714.09, "ORG_SHARE": 0.233, "donors": 20883, "vehicles": 1}, {"politician_name": "KEYSTONE PROSPERITY", "offices": "ATT", "party": "REP", "total": 9360499.3, "INDIVIDUAL": 0.0, "ORGANIZATIONAL": 9360499.3, "ORG_SHARE": 1.0, "donors": 1, "vehicles": 1}, {"politician_name": "EUGENIO DEPASQUALE", "offices": "ATT", "party": "DEM", "total": 6334846.5600000005, "INDIVIDUAL": 1678741.43, "ORGANIZATIONAL": 4656105.13, "ORG_SHARE": 0.735, "donors": 2139, "vehicles": 2}, {"politician_name": "BRADFORD, MATTHEW D", "offices": "STH", "party": "DEM", "total": 5053325.7, "INDIVIDUAL": 1224348.63, "ORGANIZATIONAL": 3828977.07, "ORG_SHARE": 0.758, "donors": 718, "vehicles": 2}, {"politician_name": "GARRITY, STACY L", "offices": "GOV,TRE", "party": "REP", "total": 4961714.89, "INDIVIDUAL": 2528332.95, "ORGANIZATIONAL": 2433381.94, "ORG_SHARE": 0.49, "donors": 4936, "vehicles": 1}, {"politician_name": "DOUGHERTY,KEVIN M", "offices": "SPM", "party": "DEM", "total": 4517988.28, "INDIVIDUAL": 721072.94, "ORGANIZATIONAL": 3796915.34, "ORG_SHARE": 0.84, "donors": 1201, "vehicles": 1}, {"politician_name": "JOE PITTMAN", "offices": "STS", "party": "REP", "total": 4230620.22, "INDIVIDUAL": 1219060.0, "ORGANIZATIONAL": 3011560.22, "ORG_SHARE": 0.712, "donors": 729, "vehicles": 1}, {"politician_name": "FRANK BURNS", "offices": "STH", "party": "DEM", "total": 4049513.44, "INDIVIDUAL": 30400.0, "ORGANIZATIONAL": 4019113.44, "ORG_SHARE": 0.992, "donors": 148, "vehicles": 1}, {"politician_name": "STANFORD, ALA DR", "offices": "USC", "party": "DEM", "total": 3985357.0, "INDIVIDUAL": 432600.0, "ORGANIZATIONAL": 3552567.0, "ORG_SHARE": 0.891, "donors": 422, "vehicles": 1}, {"politician_name": "VINCENT HUGHES", "offices": "STS", "party": "DEM", "total": 3731143.0, "INDIVIDUAL": 1422900.0, "ORGANIZATIONAL": 2308243.0, "ORG_SHARE": 0.619, "donors": 893, "vehicles": 2}, {"politician_name": "CHERELLE PARKER", "offices": "", "party": "", "total": 3449503.0, "INDIVIDUAL": 2274821.0, "ORGANIZATIONAL": 1172453.0, "ORG_SHARE": 0.34, "donors": 1650, "vehicles": 2}, {"politician_name": "ELIZABETH MORO", "offices": "STH", "party": "DEM", "total": 3352201.06, "INDIVIDUAL": 416874.11, "ORGANIZATIONAL": 2935326.95, "ORG_SHARE": 0.876, "donors": 1220, "vehicles": 2}, {"politician_name": "JOANNA E MCCLINTON", "offices": "STH", "party": "DEM", "total": 3266495.08, "INDIVIDUAL": 677044.5, "ORGANIZATIONAL": 2589450.58, "ORG_SHARE": 0.793, "donors": 1288, "vehicles": 1}, {"politician_name": "DAVID WECHT", "offices": "SPM", "party": "DEM", "total": 3212846.41, "INDIVIDUAL": 805942.98, "ORGANIZATIONAL": 2406903.43, "ORG_SHARE": 0.749, "donors": 1031, "vehicles": 1}, {"politician_name": "BRIAN MUNROE", "offices": "STH", "party": "DEM", "total": 2948854.75, "INDIVIDUAL": 220842.43, "ORGANIZATIONAL": 2728012.3200000003, "ORG_SHARE": 0.925, "donors": 826, "vehicles": 1}, {"politician_name": "STELSON, JANELLE", "offices": "USC", "party": "DEM", "total": 2898021.0, "INDIVIDUAL": 2486942.0, "ORGANIZATIONAL": 411079.0, "ORG_SHARE": 0.142, "donors": 2331, "vehicles": 1}, {"politician_name": "NICOLE", "offices": "STS", "party": "DEM", "total": 2889229.71, "INDIVIDUAL": 481565.11, "ORGANIZATIONAL": 2407664.6, "ORG_SHARE": 0.833, "donors": 1581, "vehicles": 1}, {"politician_name": "FITZPATRICK, BRIAN", "offices": "USC", "party": "REP", "total": 2867831.0, "INDIVIDUAL": 1157134.0, "ORGANIZATIONAL": 1696697.0, "ORG_SHARE": 0.592, "donors": 859, "vehicles": 1}, {"politician_name": "NICK PISCIOTTANO", "offices": "STS", "party": "DEM", "total": 2867238.93, "INDIVIDUAL": 121770.0, "ORGANIZATIONAL": 2745468.93, "ORG_SHARE": 0.958, "donors": 324, "vehicles": 1}, {"politician_name": "BROOKS, BOB", "offices": "USC", "party": "DEM", "total": 2798283.0, "INDIVIDUAL": 668580.0, "ORGANIZATIONAL": 2123703.0, "ORG_SHARE": 0.759, "donors": 573, "vehicles": 1}, {"politician_name": "CHRIS RABB", "offices": "STH,USC", "party": "DEM", "total": 2783129.0, "INDIVIDUAL": 972491.0, "ORGANIZATIONAL": 1810638.0, "ORG_SHARE": 0.651, "donors": 1086, "vehicles": 1}, {"politician_name": "COSTA, JAY JR", "offices": "STS", "party": "DEM", "total": 2756523.61, "INDIVIDUAL": 629711.0, "ORGANIZATIONAL": 2126812.61, "ORG_SHARE": 0.772, "donors": 597, "vehicles": 1}, {"politician_name": "DOUGHERTY, SEAN MICHAEL", "offices": "STH", "party": "DEM", "total": 2672907.83, "INDIVIDUAL": 171153.63, "ORGANIZATIONAL": 2501754.2, "ORG_SHARE": 0.936, "donors": 388, "vehicles": 1}, {"politician_name": "MCCORMICK, DAVE", "offices": "USS", "party": "REP", "total": 2643122.0, "INDIVIDUAL": 2067072.0, "ORGANIZATIONAL": 571550.0, "ORG_SHARE": 0.216, "donors": 4430, "vehicles": 1}, {"politician_name": "AUSTIN DAVIS", "offices": "LTG", "party": "DEM", "total": 2496906.7, "INDIVIDUAL": 1042740.1, "ORGANIZATIONAL": 1454166.6, "ORG_SHARE": 0.582, "donors": 1024, "vehicles": 1}, {"politician_name": "HAAS,HADLEY B", "offices": "STH", "party": "DEM", "total": 2478926.65, "INDIVIDUAL": 498577.12, "ORGANIZATIONAL": 1980349.53, "ORG_SHARE": 0.799, "donors": 1269, "vehicles": 1}, {"politician_name": "SHARIF STREET", "offices": "STS,USC,USS", "party": "DEM", "total": 2436775.02, "INDIVIDUAL": 1194249.02, "ORGANIZATIONAL": 1242526.0, "ORG_SHARE": 0.51, "donors": 1068, "vehicles": 3}, {"politician_name": "MATZIE, ROBERT F", "offices": "STH", "party": "DEM", "total": 2396958.24, "INDIVIDUAL": 58458.44, "ORGANIZATIONAL": 2338499.8, "ORG_SHARE": 0.976, "donors": 253, "vehicles": 1}, {"politician_name": "COGNETTI, PAIGE", "offices": "USC", "party": "DEM", "total": 2363786.0, "INDIVIDUAL": 1940543.0, "ORGANIZATIONAL": 423243.0, "ORG_SHARE": 0.179, "donors": 1704, "vehicles": 1}, {"politician_name": "JORDAN A HARRIS", "offices": "STH", "party": "DEM", "total": 2349506.7, "INDIVIDUAL": 387202.42, "ORGANIZATIONAL": 1962304.28, "ORG_SHARE": 0.835, "donors": 646, "vehicles": 1}, {"politician_name": "KENYATTA JOHNSON", "offices": "", "party": "", "total": 2327187.0, "INDIVIDUAL": 1311737.0, "ORGANIZATIONAL": 1015150.0, "ORG_SHARE": 0.436, "donors": 1184, "vehicles": 1}, {"politician_name": "ANNA THOMAS", "offices": "STH", "party": "DEM", "total": 2314278.83, "INDIVIDUAL": 399900.78, "ORGANIZATIONAL": 1914378.05, "ORG_SHARE": 0.827, "donors": 1190, "vehicles": 1}, {"politician_name": "BRESNAHAN, ROB", "offices": "USC", "party": "REP", "total": 2224416.0, "INDIVIDUAL": 1103254.0, "ORGANIZATIONAL": 1087412.0, "ORG_SHARE": 0.489, "donors": 1069, "vehicles": 1}, {"politician_name": "RESCHENTHALER, GUY MR", "offices": "USC", "party": "REP", "total": 2144545.0, "INDIVIDUAL": 1199843.0, "ORGANIZATIONAL": 944702.0, "ORG_SHARE": 0.441, "donors": 2057, "vehicles": 1}, {"politician_name": "JIM WERTZ", "offices": "STS", "party": "DEM", "total": 2112681.02, "INDIVIDUAL": 484624.06, "ORGANIZATIONAL": 1628056.96, "ORG_SHARE": 0.771, "donors": 955, "vehicles": 1}, {"politician_name": "PERRY, SCOTT", "offices": "USC", "party": "REP", "total": 2046669.0, "INDIVIDUAL": 1317620.0, "ORGANIZATIONAL": 728049.0, "ORG_SHARE": 0.356, "donors": 2333, "vehicles": 1}, {"politician_name": "TO RETAIN JUSTICE CHRISTINE DONOHUE", "offices": "SPM", "party": "", "total": 1947098.93, "INDIVIDUAL": 507032.76, "ORGANIZATIONAL": 1440066.17, "ORG_SHARE": 0.74, "donors": 691, "vehicles": 1}, {"politician_name": "PAYNE , ANNA K", "offices": "STH", "party": "DEM", "total": 1886926.27, "INDIVIDUAL": 319596.76, "ORGANIZATIONAL": 1567329.51, "ORG_SHARE": 0.831, "donors": 1135, "vehicles": 1}, {"politician_name": "CROSSWELL, RYAN", "offices": "USC", "party": "DEM", "total": 1765057.0, "INDIVIDUAL": 1236928.0, "ORGANIZATIONAL": 525379.0, "ORG_SHARE": 0.298, "donors": 1155, "vehicles": 1}, {"politician_name": "SCOTT F MARTIN", "offices": "STS", "party": "REP", "total": 1674277.26, "INDIVIDUAL": 588350.53, "ORGANIZATIONAL": 1085926.73, "ORG_SHARE": 0.649, "donors": 658, "vehicles": 1}, {"politician_name": "PSEA-PACE FOR STATE ELECTIONS", "offices": "STH", "party": "", "total": 1639624.19, "INDIVIDUAL": 1632673.26, "ORGANIZATIONAL": 6950.93, "ORG_SHARE": 0.004, "donors": 10040, "vehicles": 1}, {"politician_name": "PENNSYLVANIA MAJORITY", "offices": "GOV", "party": "", "total": 1606500.0, "INDIVIDUAL": 1180000.0, "ORGANIZATIONAL": 426500.0, "ORG_SHARE": 0.265, "donors": 21, "vehicles": 1}, {"politician_name": "KIM, PATRICIA H", "offices": "STS", "party": "DEM", "total": 1585891.4, "INDIVIDUAL": 364005.22, "ORGANIZATIONAL": 1221886.18, "ORG_SHARE": 0.77, "donors": 1029, "vehicles": 1}, {"politician_name": "CHRIS DELUZIO", "offices": "STH,USC", "party": "DEM", "total": 1578521.0, "INDIVIDUAL": 1137227.0, "ORGANIZATIONAL": 438294.0, "ORG_SHARE": 0.278, "donors": 1165, "vehicles": 1}, {"politician_name": "MEUSER, DANIEL", "offices": "USC", "party": "REP", "total": 1559917.0, "INDIVIDUAL": 878237.0, "ORGANIZATIONAL": 675680.0, "ORG_SHARE": 0.433, "donors": 454, "vehicles": 1}, {"politician_name": "RYAN MACKENZIE", "offices": "USC", "party": "REP", "total": 1553861.0, "INDIVIDUAL": 773380.0, "ORGANIZATIONAL": 772981.0, "ORG_SHARE": 0.497, "donors": 1011, "vehicles": 1}, {"politician_name": "JOHN KANE", "offices": "STS", "party": "DEM", "total": 1497422.02, "INDIVIDUAL": 38804.0, "ORGANIZATIONAL": 1458616.02, "ORG_SHARE": 0.974, "donors": 152, "vehicles": 2}, {"politician_name": "JOYCE, JOHN", "offices": "USC", "party": "REP", "total": 1444832.0, "INDIVIDUAL": 360395.0, "ORGANIZATIONAL": 1067937.0, "ORG_SHARE": 0.739, "donors": 224, "vehicles": 1}, {"politician_name": "BAKER, ELISABETH J", "offices": "STS", "party": "REP", "total": 1439889.96, "INDIVIDUAL": 336859.87, "ORGANIZATIONAL": 1103030.09, "ORG_SHARE": 0.766, "donors": 572, "vehicles": 2}, {"politician_name": "THOMPSON, GLENN MR", "offices": "USC", "party": "REP", "total": 1435478.0, "INDIVIDUAL": 595753.0, "ORGANIZATIONAL": 818725.0, "ORG_SHARE": 0.57, "donors": 409, "vehicles": 1}, {"politician_name": "FRANK FARRY", "offices": "STS", "party": "REP", "total": 1342047.55, "INDIVIDUAL": 328750.01, "ORGANIZATIONAL": 1013297.54, "ORG_SHARE": 0.755, "donors": 432, "vehicles": 1}, {"politician_name": "MCCLURE, LAMONT", "offices": "USC", "party": "DEM", "total": 1332868.0, "INDIVIDUAL": 189513.0, "ORGANIZATIONAL": 1119355.0, "ORG_SHARE": 0.84, "donors": 204, "vehicles": 1}, {"politician_name": "UNITED STEELWORKERS", "offices": "STH", "party": "DEM", "total": 1332661.55, "INDIVIDUAL": 1223377.2, "ORGANIZATIONAL": 109284.35, "ORG_SHARE": 0.082, "donors": 2922, "vehicles": 1}, {"politician_name": "FETTERMAN, JOHN KARL", "offices": "USS", "party": "DEM", "total": 1255709.0, "INDIVIDUAL": 1202483.0, "ORGANIZATIONAL": 53226.0, "ORG_SHARE": 0.042, "donors": 3940, "vehicles": 1}, {"politician_name": "BOYLE", "offices": "USC", "party": "DEM", "total": 1234651.0, "INDIVIDUAL": 433485.0, "ORGANIZATIONAL": 787166.0, "ORG_SHARE": 0.638, "donors": 275, "vehicles": 2}, {"politician_name": "DILLON, JAMES", "offices": "STS", "party": "DEM", "total": 1197215.82, "INDIVIDUAL": 71025.0, "ORGANIZATIONAL": 1126190.82, "ORG_SHARE": 0.941, "donors": 185, "vehicles": 1}, {"politician_name": "HOULAHAN, CHRISSY", "offices": "USC", "party": "DEM", "total": 1194006.0, "INDIVIDUAL": 756083.0, "ORGANIZATIONAL": 437923.0, "ORG_SHARE": 0.367, "donors": 592, "vehicles": 1}, {"politician_name": "SOLOMON, JARED G", "offices": "ATT,STH", "party": "DEM", "total": 1163104.4, "INDIVIDUAL": 954168.13, "ORGANIZATIONAL": 208936.27, "ORG_SHARE": 0.18, "donors": 884, "vehicles": 2}, {"politician_name": "MARTIN B FLYNN", "offices": "STS", "party": "DEM", "total": 1127948.62, "INDIVIDUAL": 459864.0, "ORGANIZATIONAL": 668084.62, "ORG_SHARE": 0.592, "donors": 467, "vehicles": 1}, {"politician_name": "MALCOLM FOR PA", "offices": "STH", "party": "DEM", "total": 1119146.64, "INDIVIDUAL": 574100.11, "ORGANIZATIONAL": 545046.53, "ORG_SHARE": 0.487, "donors": 1683, "vehicles": 1}], "org": [{"entity_name": "STUDENTS FIRST PAC", "total": 28271700.0, "recipients": 11}, {"entity_name": "COMMONWEALTH CHILDRENS CHOICE FUND", "total": 25800866.78, "recipients": 42}, {"entity_name": "Republican State Leadership Committee", "total": 24122175.56, "recipients": 9}, {"entity_name": "COMMONWEALTH LEADERS FUND", "total": 15976417.58, "recipients": 31}, {"entity_name": "MOVEMENT VOTER PAC", "total": 14059350.64, "recipients": 14}, {"entity_name": "HOUSE DEMOCRATIC CAMPAIGN COMMITTEE", "total": 13476729.1, "recipients": 13}, {"entity_name": "PAC for America's Future - PA", "total": 9879968.0, "recipients": 6}, {"entity_name": "Republican Attorneys General Association", "total": 9360499.3, "recipients": 1}, {"entity_name": "PENNSYLVANIA DEMOCRATIC PARTY", "total": 8143116.03, "recipients": 126}, {"entity_name": "PENNSYLVANIA HOUSE DEMOCRATIC CAMPAIGN COMMITTEE", "total": 7330000.55, "recipients": 20}, {"entity_name": "SENATE REPUBLICAN CAMPAIGN COMMITTEE", "total": 6812887.13, "recipients": 21}, {"entity_name": "COMMITTEE FOR A BETTER TOMORROW", "total": 6621800.0, "recipients": 36}, {"entity_name": "Democratic State Senate Campaign Committee", "total": 6271422.43, "recipients": 4}, {"entity_name": "PA ALLIANCE ACTION", "total": 5766666.66, "recipients": 3}, {"entity_name": "SHAPIRO FOR PENNSYLVANIA", "total": 5691693.01, "recipients": 11}, {"entity_name": "SEIU COPE", "total": 5259678.38, "recipients": 8}, {"entity_name": "VOTE YES FOR FAIR AND INDEPENDENT COURTS", "total": 4840723.68, "recipients": 11}, {"entity_name": "Greater PA Carpenters PEC", "total": 4695670.0, "recipients": 237}, {"entity_name": "LEXINGTON FUND", "total": 4150000.0, "recipients": 1}, {"entity_name": "HOUSE REPUBLICAN CAMPAIGN COMMITTEE", "total": 4091632.78, "recipients": 48}, {"entity_name": "Operators for Skill PAC", "total": 3795900.0, "recipients": 246}, {"entity_name": "FRIENDS OF MATT BRADFORD", "total": 3510690.11, "recipients": 70}, {"entity_name": "HOUSE DEM CAMPAIGN COM", "total": 3448817.0900000003, "recipients": 5}, {"entity_name": "FRIENDS OF KIM WARD", "total": 3368574.0, "recipients": 27}, {"entity_name": "AMERICAN CONSERVATIVE FUND", "total": 3041000.0, "recipients": 1}, {"entity_name": "FRIENDS OF JOE PITTMAN", "total": 3039336.0, "recipients": 20}, {"entity_name": "AFSCME PEOPLE", "total": 3017858.25, "recipients": 47}, {"entity_name": "CITIZENS ALLIANCE PAC", "total": 2794702.38, "recipients": 1}, {"entity_name": "Democratic Attorneys General Association (DAGA PA)", "total": 2747548.42, "recipients": 1}, {"entity_name": "Citizens for Hughes", "total": 2738179.3, "recipients": 64}], "ind": [{"entity_name": "JEFFREY YASS", "total": 33790000.0, "recipients": 2}, {"entity_name": "Barry Munger", "total": 5059000.0, "recipients": 3}, {"entity_name": "Michael R. Bloomberg", "total": 4500000.0, "recipients": 1}, {"entity_name": "Deborah J. Simon", "total": 3189000.0, "recipients": 10}, {"entity_name": "MICHAEL R PACE", "total": 3012000.0, "recipients": 8}, {"entity_name": "JOHN ARNOLD", "total": 2487166.46, "recipients": 10}, {"entity_name": "NON-PA CONTRIBUTORS", "total": 2123336.02, "recipients": 2}, {"entity_name": "Jonathan Soros", "total": 2014000.0, "recipients": 3}, {"entity_name": "Jennifer Duda", "total": 2000000.0, "recipients": 1}, {"entity_name": "Sarah Q. O'Neill", "total": 1735009.2, "recipients": 1}, {"entity_name": "Lisa Mennet", "total": 1610000.0, "recipients": 3}, {"entity_name": "Reid Hoffman", "total": 1573200.0, "recipients": 4}, {"entity_name": "Andrew G. Hauptman", "total": 1485960.68, "recipients": 2}, {"entity_name": "Christian Larsen", "total": 1250000.0, "recipients": 2}, {"entity_name": "Wendy Munger", "total": 1240000.0, "recipients": 3}, {"entity_name": "Lynn Schusterman", "total": 1092000.0, "recipients": 7}, {"entity_name": "LOUIS D MIELE", "total": 1081000.0, "recipients": 3}, {"entity_name": "THOMAS J DELEO", "total": 1060450.0, "recipients": 10}, {"entity_name": "J.C. HUIZENGA", "total": 1050000.0, "recipients": 1}, {"entity_name": "democracyFIRST", "total": 1000000.0, "recipients": 1}, {"entity_name": "Laura  Arnold", "total": 996500.0, "recipients": 9}, {"entity_name": "Gideon Friedman", "total": 994015.24, "recipients": 2}, {"entity_name": "Edward W. Snowdon Jr", "total": 872000.0, "recipients": 4}, {"entity_name": "MICHAEL KARP", "total": 759700.01, "recipients": 9}, {"entity_name": "A. Ross Myers", "total": 748500.0, "recipients": 8}, {"entity_name": "Gloria Page", "total": 723900.0, "recipients": 16}, {"entity_name": "Mark Willis Heising", "total": 704222.0, "recipients": 12}, {"entity_name": "Thomas B. Hagen", "total": 674276.09, "recipients": 12}, {"entity_name": "David Karp", "total": 640200.0, "recipients": 2}, {"entity_name": "John A. Pritzker", "total": 640000.0, "recipients": 2}], "industry": [{"industry": "UNCLASSIFIED", "total": 430651441.56, "pacs": 10161}, {"industry": "EDUCATION", "total": 30935654.89, "pacs": 106}, {"industry": "BUILDING_TRADES_LABOR", "total": 29737867.77, "pacs": 340}, {"industry": "LEGAL_SERVICES", "total": 21588550.130000003, "pacs": 284}, {"industry": "PUBLIC_SECTOR_LABOR", "total": 14559509.98, "pacs": 119}, {"industry": "REAL_ESTATE_DEVELOPMENT", "total": 5154692.0, "pacs": 167}, {"industry": "FINANCE_INSURANCE", "total": 4749704.2, "pacs": 215}, {"industry": "HEALTHCARE", "total": 4725229.77, "pacs": 213}, {"industry": "ENERGY_UTILITIES", "total": 4117636.35, "pacs": 183}, {"industry": "CONSTRUCTION_CONTRACTING", "total": 2039610.94, "pacs": 186}, {"industry": "TRANSPORTATION_LOGISTICS", "total": 211635.76, "pacs": 27}], "stype": [{"sponsor_type": "UNKNOWN", "total": 200712645.76, "pacs": 6485}, {"sponsor_type": "PARTY", "total": 87971125.06, "pacs": 876}, {"sponsor_type": "CORPORATION", "total": 83109366.73, "pacs": 2177}, {"sponsor_type": "LABOR_UNION", "total": 80096685.55, "pacs": 1235}, {"sponsor_type": "IDEOLOGICAL_ADVOCACY", "total": 64884814.34, "pacs": 260}, {"sponsor_type": "LAW_FIRM", "total": 21675830.05, "pacs": 331}, {"sponsor_type": "TRADE_ASSOCIATION", "total": 9997315.86, "pacs": 632}, {"sponsor_type": "MEMBERSHIP_ORG", "total": 13750.0, "pacs": 4}, {"sponsor_type": "CORP_NO_STOCK", "total": 10000.0, "pacs": 1}], "chains": [{"entity_name": "STUDENTS FIRST PAC", "total": 28271700.0, "politicians": 4, "hops_to_source": 1, "ultimate_source": "JEFFREY YASS", "money_chain": "STUDENTS FIRST PAC <- JEFFREY YASS", "top_funder": "JEFFREY YASS", "top_funder_share": 1.0}, {"entity_name": "COMMONWEALTH CHILDRENS CHOICE FUND", "total": 25800866.78, "politicians": 19, "hops_to_source": 2, "ultimate_source": "JEFFREY YASS", "money_chain": "COMMONWEALTH CHILDRENS CHOICE FUND <- STUDENTS FIRST PAC <- JEFFREY YASS", "top_funder": "STUDENTS FIRST PAC", "top_funder_share": 0.9975933347610161}, {"entity_name": "COMMONWEALTH LEADERS FUND", "total": 15976417.58, "politicians": 10, "hops_to_source": 3, "ultimate_source": "JEFFREY YASS", "money_chain": "COMMONWEALTH LEADERS FUND <- COMMONWEALTH CHILDRENS CHOICE FUND <- STUDENTS FIRST PAC <- JEFFREY YASS", "top_funder": "COMMONWEALTH CHILDRENS CHOICE FUND", "top_funder_share": 0.9786835884596765}, {"entity_name": "AFSCME Council 13", "total": 1477335.0, "politicians": 122, "hops_to_source": 1, "ultimate_source": "AFSCME PEOPLE", "money_chain": "AFSCME Council 13 <- AFSCME PEOPLE", "top_funder": "AFSCME PEOPLE", "top_funder_share": 0.9578825486351469}, {"entity_name": "FOR-WARD PAC", "total": 881000.0, "politicians": 0, "hops_to_source": 1, "ultimate_source": "UNIVERSITY CITY HOUSING ASSOCIATES", "money_chain": "FOR-WARD PAC <- UNIVERSITY CITY HOUSING ASSOCIATES", "top_funder": "UNIVERSITY CITY HOUSING ASSOCIATES", "top_funder_share": 0.7746478873239436}, {"entity_name": "SMUCKER FOR CONGRESS", "total": 819091.0, "politicians": 6, "hops_to_source": 1, "ultimate_source": "PENN MANOR REPUBLICAN COMMITTEE", "money_chain": "SMUCKER FOR CONGRESS <- PENN MANOR REPUBLICAN COMMITTEE", "top_funder": "PENN MANOR REPUBLICAN COMMITTEE", "top_funder_share": 1.0}, {"entity_name": "CITIZENS FOR BOYLE", "total": 782634.0, "politicians": 1, "hops_to_source": 1, "ultimate_source": "Friends of Sean Kilkenny", "money_chain": "CITIZENS FOR BOYLE <- Friends of Sean Kilkenny", "top_funder": "Friends of Sean Kilkenny", "top_funder_share": 1.0}, {"entity_name": "Pennsylvania Laborers District Council PAC Fund", "total": 767105.0, "politicians": 24, "hops_to_source": 1, "ultimate_source": "LABORERS COMBINED FUNDS", "money_chain": "Pennsylvania Laborers District Council PAC Fund <- LABORERS COMBINED FUNDS", "top_funder": "LABORERS COMBINED FUNDS", "top_funder_share": 1.0}, {"entity_name": "KEYSTONE PAC", "total": 704500.0, "politicians": 0, "hops_to_source": 1, "ultimate_source": "REPUBLICAN ATTORNEYS GENERAL ASSOCIATION PA - INDIVIDUAL ACCOUNT", "money_chain": "KEYSTONE PAC <- REPUBLICAN ATTORNEYS GENERAL ASSOCIATION PA - INDIVIDUAL ACCOUNT", "top_funder": "REPUBLICAN ATTORNEYS GENERAL ASSOCIATION PA - INDIVIDUAL ACCOUNT", "top_funder_share": 1.0}, {"entity_name": "SEIU HEALTHCARE PA COPE", "total": 703232.43, "politicians": 44, "hops_to_source": 1, "ultimate_source": "SEIU COPE", "money_chain": "SEIU HEALTHCARE PA COPE <- SEIU COPE", "top_funder": "SEIU COPE", "top_funder_share": 1.0}, {"entity_name": "FRIENDS OF ELIZABETH MORO", "total": 668526.76, "politicians": 2, "hops_to_source": 1, "ultimate_source": "PENNSYLVANIA HOUSE DEMOCRATIC CAMPAIGN COMMITTEE", "money_chain": "FRIENDS OF ELIZABETH MORO <- PENNSYLVANIA HOUSE DEMOCRATIC CAMPAIGN COMMITTEE", "top_funder": "PENNSYLVANIA HOUSE DEMOCRATIC CAMPAIGN COMMITTEE", "top_funder_share": 0.5952458499297707}, {"entity_name": "FRIENDS OF BRIAN MUNROE", "total": 483863.55, "politicians": 3, "hops_to_source": 1, "ultimate_source": "HOUSE DEM CAMPAIGN COM", "money_chain": "FRIENDS OF BRIAN MUNROE <- HOUSE DEM CAMPAIGN COM", "top_funder": "HOUSE DEM CAMPAIGN COM", "top_funder_share": 0.5652209896062191}, {"entity_name": "WOJDAK FOR THE COMMONWEALTH PAC", "total": 480273.25, "politicians": 78, "hops_to_source": 1, "ultimate_source": "S.R. Wojdak & Associates LP", "money_chain": "WOJDAK FOR THE COMMONWEALTH PAC <- S.R. Wojdak & Associates LP", "top_funder": "S.R. Wojdak & Associates LP", "top_funder_share": 0.6666666666666666}, {"entity_name": "FRIENDS OF JIM HADDOCK", "total": 462443.0, "politicians": 7, "hops_to_source": 1, "ultimate_source": "PENNSYLVANIA HOUSE DEMOCRATIC CAMPAIGN COMMITTEE", "money_chain": "FRIENDS OF JIM HADDOCK <- PENNSYLVANIA HOUSE DEMOCRATIC CAMPAIGN COMMITTEE", "top_funder": "PENNSYLVANIA HOUSE DEMOCRATIC CAMPAIGN COMMITTEE", "top_funder_share": 0.5938639508621932}, {"entity_name": "2999 GROUP", "total": 388000.0, "politicians": 21, "hops_to_source": 1, "ultimate_source": "ROBERT W. GREEN", "money_chain": "2999 GROUP <- ROBERT W. GREEN", "top_funder": "ROBERT W. GREEN", "top_funder_share": 1.0}, {"entity_name": "PA Laborers Jobs PAC", "total": 379550.0, "politicians": 12, "hops_to_source": 1, "ultimate_source": "EASTERN PA LABORERS' LPL", "money_chain": "PA Laborers Jobs PAC <- EASTERN PA LABORERS' LPL", "top_funder": "EASTERN PA LABORERS' LPL", "top_funder_share": 1.0}, {"entity_name": "MAKE A DIFFERENCE PAC", "total": 340000.0, "politicians": 1, "hops_to_source": 2, "ultimate_source": "JEFFREY YASS", "money_chain": "MAKE A DIFFERENCE PAC <- STUDENTS FIRST PAC <- JEFFREY YASS", "top_funder": "STUDENTS FIRST PAC", "top_funder_share": 0.9997257894977377}, {"entity_name": "FRIENDS OF SARA AGERTON", "total": 324320.0, "politicians": 0, "hops_to_source": 1, "ultimate_source": "PENNSYLVANIA HOUSE DEMOCRATIC CAMPAIGN COMMITTEE", "money_chain": "FRIENDS OF SARA AGERTON <- PENNSYLVANIA HOUSE DEMOCRATIC CAMPAIGN COMMITTEE", "top_funder": "PENNSYLVANIA HOUSE DEMOCRATIC CAMPAIGN COMMITTEE", "top_funder_share": 0.5047767959956915}, {"entity_name": "FAIRNESS PA", "total": 320000.0, "politicians": 2, "hops_to_source": 1, "ultimate_source": "COMMITTEE FOR A BETTER TOMORROW", "money_chain": "FAIRNESS PA <- COMMITTEE FOR A BETTER TOMORROW", "top_funder": "COMMITTEE FOR A BETTER TOMORROW", "top_funder_share": 0.6862745098039216}, {"entity_name": "Local 0066 PAC Club", "total": 316300.0, "politicians": 4, "hops_to_source": 1, "ultimate_source": "IUOE LOCAL 66", "money_chain": "Local 0066 PAC Club <- IUOE LOCAL 66", "top_funder": "IUOE LOCAL 66", "top_funder_share": 1.0}, {"entity_name": "Local 0690 Plumbers Union Pol Action Fund", "total": 300500.0, "politicians": 26, "hops_to_source": 1, "ultimate_source": "KEVIN DOUGHERTY FOR PENNSYLVANIA", "money_chain": "Local 0690 Plumbers Union Pol Action Fund <- KEVIN DOUGHERTY FOR PENNSYLVANIA", "top_funder": "KEVIN DOUGHERTY FOR PENNSYLVANIA", "top_funder_share": 1.0}, {"entity_name": "Friends of Freedom & Convenience", "total": 296003.0, "politicians": 11, "hops_to_source": 1, "ultimate_source": "Scott Hartman", "money_chain": "Friends of Freedom & Convenience <- Scott Hartman", "top_funder": "Scott Hartman", "top_funder_share": 0.5833358333583336}, {"entity_name": "PA LEADERS ACTION FUND", "total": 294000.0, "politicians": 10, "hops_to_source": 2, "ultimate_source": "JEFFREY YASS", "money_chain": "PA LEADERS ACTION FUND <- STUDENTS FIRST PAC <- JEFFREY YASS", "top_funder": "STUDENTS FIRST PAC", "top_funder_share": 0.6887052341597796}, {"entity_name": "WECHT 2025", "total": 291431.73, "politicians": 0, "hops_to_source": 1, "ultimate_source": "VOTE YES FOR FAIR AND INDEPENDENT COURTS", "money_chain": "WECHT 2025 <- VOTE YES FOR FAIR AND INDEPENDENT COURTS", "top_funder": "VOTE YES FOR FAIR AND INDEPENDENT COURTS", "top_funder_share": 0.5330560666297148}, {"entity_name": "HEATHER SCHMIDT BRESNAHAN", "total": 281423.46, "politicians": 2, "hops_to_source": 1, "ultimate_source": "HEATHER FOR JUDGE 2025", "money_chain": "HEATHER SCHMIDT BRESNAHAN <- HEATHER FOR JUDGE 2025", "top_funder": "HEATHER FOR JUDGE 2025", "top_funder_share": 1.0}], "sources": [{"ultimate_source": "JEFFREY YASS", "ultimate_source_type": "INDIVIDUAL", "dollars_to_politicians": 71246102.73, "vehicles": 17, "max_hops": 5}, {"ultimate_source": "AFSCME PEOPLE", "ultimate_source_type": "ORGANIZATIONAL", "dollars_to_politicians": 1477335.0, "vehicles": 1, "max_hops": 1}, {"ultimate_source": "PENNSYLVANIA HOUSE DEMOCRATIC CAMPAIGN COMMITTEE", "ultimate_source_type": "ORGANIZATIONAL", "dollars_to_politicians": 1455289.76, "vehicles": 3, "max_hops": 1}, {"ultimate_source": "SEIU COPE", "ultimate_source_type": "ORGANIZATIONAL", "dollars_to_politicians": 975482.43, "vehicles": 3, "max_hops": 1}, {"ultimate_source": "UNIVERSITY CITY HOUSING ASSOCIATES", "ultimate_source_type": "ORGANIZATIONAL", "dollars_to_politicians": 881000.0, "vehicles": 1, "max_hops": 1}, {"ultimate_source": "PENN MANOR REPUBLICAN COMMITTEE", "ultimate_source_type": "ORGANIZATIONAL", "dollars_to_politicians": 819091.0, "vehicles": 1, "max_hops": 1}, {"ultimate_source": "Friends of Sean Kilkenny", "ultimate_source_type": "ORGANIZATIONAL", "dollars_to_politicians": 782634.0, "vehicles": 1, "max_hops": 1}, {"ultimate_source": "LABORERS COMBINED FUNDS", "ultimate_source_type": "ORGANIZATIONAL", "dollars_to_politicians": 767105.0, "vehicles": 1, "max_hops": 1}, {"ultimate_source": "REPUBLICAN ATTORNEYS GENERAL ASSOCIATION PA - INDIVIDUAL ACCOUNT", "ultimate_source_type": "ORGANIZATIONAL", "dollars_to_politicians": 704500.0, "vehicles": 1, "max_hops": 1}, {"ultimate_source": "HOUSE DEM CAMPAIGN COM", "ultimate_source_type": "ORGANIZATIONAL", "dollars_to_politicians": 483863.55, "vehicles": 1, "max_hops": 1}, {"ultimate_source": "S.R. Wojdak & Associates LP", "ultimate_source_type": "ORGANIZATIONAL", "dollars_to_politicians": 480273.25, "vehicles": 1, "max_hops": 1}, {"ultimate_source": "COMMITTEE FOR A BETTER TOMORROW", "ultimate_source_type": "ORGANIZATIONAL", "dollars_to_politicians": 468450.0, "vehicles": 2, "max_hops": 1}, {"ultimate_source": "ROBERT W. GREEN", "ultimate_source_type": "INDIVIDUAL", "dollars_to_politicians": 388000.0, "vehicles": 1, "max_hops": 1}, {"ultimate_source": "EASTERN PA LABORERS' LPL", "ultimate_source_type": "ORGANIZATIONAL", "dollars_to_politicians": 379550.0, "vehicles": 1, "max_hops": 1}, {"ultimate_source": "SEE LIST ATTACHED TO COVER LETTER", "ultimate_source_type": "INDIVIDUAL", "dollars_to_politicians": 348200.0, "vehicles": 2, "max_hops": 1}], "jur": [{"jurisdiction": "FEDERAL", "amount": 51491200.0}, {"jurisdiction": "PA-STATE", "amount": 835691333.28}, {"jurisdiction": "PHILADELPHIA", "amount": 119677052.0}], "byyear": [{"y": 2023.0, "donor_bucket": "INDIVIDUAL", "amount": 60784.88}, {"y": 2023.0, "donor_bucket": "ORGANIZATIONAL", "amount": 1364747.43}, {"y": 2024.0, "donor_bucket": "INDIVIDUAL", "amount": 178071350.91}, {"y": 2024.0, "donor_bucket": "ORGANIZATIONAL", "amount": 303420915.79}, {"y": 2024.0, "donor_bucket": "OTHER/UNRESOLVED", "amount": 4068048.0}, {"y": 2025.0, "donor_bucket": "INDIVIDUAL", "amount": 178394936.67}, {"y": 2025.0, "donor_bucket": "ORGANIZATIONAL", "amount": 143578028.13}, {"y": 2025.0, "donor_bucket": "OTHER/UNRESOLVED", "amount": 5053392.0}, {"y": 2026.0, "donor_bucket": "INDIVIDUAL", "amount": 90517163.95}, {"y": 2026.0, "donor_bucket": "ORGANIZATIONAL", "amount": 98870395.53}, {"y": 2026.0, "donor_bucket": "OTHER/UNRESOLVED", "amount": 1819892.0}]};
+const money = n => '$' + Number(n).toLocaleString('en-US',{maximumFractionDigits:0});
+const mm = n => '$' + (Number(n)/1e6).toFixed(Number(n)>=1e7?1:2) + 'M';
+const pct = n => (Number(n)*100).toFixed(0) + '%';
+const esc = s => String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+function tabs(){
+  document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{
+    document.querySelectorAll('nav button').forEach(x=>x.setAttribute('aria-selected',x===b));
+    document.querySelectorAll('main section').forEach(s=>s.hidden = s.id!==b.dataset.t);
+  });
+}
+function sortable(tbl){
+  tbl.querySelectorAll('th:not(.na)').forEach((th,i)=>{
+    th.onclick=()=>{
+      const tb=tbl.tBodies[0], rows=[...tb.rows];
+      const dir = th.dataset.d==='a'?-1:1; th.dataset.d = dir===1?'a':'d';
+      rows.sort((x,y)=>{
+        const a=x.cells[i].dataset.v ?? x.cells[i].textContent;
+        const b=y.cells[i].dataset.v ?? y.cells[i].textContent;
+        const na=parseFloat(a), nb=parseFloat(b);
+        return (!isNaN(na)&&!isNaN(nb)) ? (na-nb)*dir : String(a).localeCompare(String(b))*dir;
+      });
+      rows.forEach(r=>tb.appendChild(r));
+    };
+  });
+}
+function render(){
+  const k=D.kpi;
+  document.getElementById('kpis').innerHTML = [
+    ['Total tracked', mm(k.total), (k.n).toLocaleString()+' contributions'],
+    ['Organizational', mm(k.org), pct(k.org/k.total)+' of total'],
+    ['Individual', mm(k.ind), pct(k.ind/k.total)+' of total'],
+    ['Donor entities', k.entities.toLocaleString(), 'from '+k.variants.toLocaleString()+' name variants'],
+    ['Politicians', k.pols.toLocaleString(), k.pols_recv.toLocaleString()+' received money in window'],
+  ].map(([l,v,n])=>`<div class="kpi"><div class="l">${l}</div><div class="v">${v}</div><div class="n">${n}</div></div>`).join('');
+
+  const maxP = Math.max(...D.pol.map(r=>r.total));
+  document.querySelector('#tPol tbody').innerHTML = D.pol.map(r=>{
+    const o=+r.ORGANIZATIONAL||0, i=+r.INDIVIDUAL||0, t=+r.total||1;
+    return `<tr><td>${esc(r.politician_name)}</td><td><span class="pill">${esc(r.offices||'-')}</span></td>
+    <td>${esc(r.party||'-')}</td>
+    <td class="num" data-v="${r.total}">${money(r.total)}</td>
+    <td><div class="split" title="${pct(o/t)} organizational">
+      <i style="width:${o/t*100}%;background:var(--org)"></i><i style="width:${i/t*100}%;background:var(--ind)"></i></div></td>
+    <td class="num" data-v="${o/t}">${pct(o/t)}</td>
+    <td class="num" data-v="${r.donors}">${(+r.donors).toLocaleString()}</td>
+    <td><div class="bar"><i style="width:${r.total/maxP*100}%"></i></div></td></tr>`;
+  }).join('');
+
+  const rows=(arr,cls)=>{const m=Math.max(...arr.map(r=>r.total));
+    return arr.map(r=>`<tr><td>${esc(r.entity_name)}</td>
+      <td class="num" data-v="${r.total}">${money(r.total)}</td>
+      <td class="num" data-v="${r.recipients}">${r.recipients}</td>
+      <td><div class="bar"><i style="width:${r.total/m*100}%;background:var(--${cls})"></i></div></td></tr>`).join('');};
+  document.querySelector('#tOrg tbody').innerHTML = rows(D.org,'org');
+  document.querySelector('#tInd tbody').innerHTML = rows(D.ind,'ind');
+
+  const mi=Math.max(...D.industry.filter(r=>r.industry!=='UNCLASSIFIED').map(r=>r.total));
+  document.querySelector('#tInd2 tbody').innerHTML = D.industry.map(r=>{
+    const un = r.industry==='UNCLASSIFIED';
+    return `<tr><td>${esc(r.industry.replace(/_/g,' '))}</td>
+    <td class="num" data-v="${r.total}">${money(r.total)}</td>
+    <td class="num" data-v="${r.pacs}">${r.pacs}</td>
+    <td>${un?'<span class="pill">not tagged</span>':`<div class="bar"><i style="width:${Math.min(r.total/mi*100,100)}%"></i></div>`}</td></tr>`;
+  }).join('');
+
+  document.querySelector('#tSrc tbody').innerHTML = D.sources.map(r=>
+    `<tr><td>${esc(r.ultimate_source)}</td><td><span class="pill">${esc(r.ultimate_source_type)}</span></td>
+     <td class="num" data-v="${r.dollars_to_politicians}">${money(r.dollars_to_politicians)}</td>
+     <td class="num" data-v="${r.vehicles}">${r.vehicles}</td>
+     <td class="num" data-v="${r.max_hops}">${r.max_hops}</td></tr>`).join('');
+
+  document.getElementById('chains').innerHTML = D.chains.map(r=>{
+    const parts=String(r.money_chain).split(' <- ');
+    const viz=parts.map((p,ix)=>`<span class="hop${ix===parts.length-1?' src':''}">${esc(p)}</span>`)
+      .join('<span class="arr">&larr;</span>');
+    return `<div style="border:1px solid var(--line);padding:11px 13px;margin-bottom:9px;background:#fff">
+      <div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:6px">
+        <b>${esc(r.entity_name)}</b>
+        <span class="num">${money(r.total)} out &middot; ${r.politicians} politicians &middot; ${r.hops_to_source} hop(s)</span></div>
+      <div class="chain">${viz}</div></div>`;
+  }).join('');
+
+  const q=document.getElementById('q'), pf=document.getElementById('pf');
+  const filt=()=>{const s=(q.value||'').toLowerCase(), p=pf.value;
+    document.querySelectorAll('#tPol tbody tr').forEach(tr=>{
+      const nm=tr.cells[0].textContent.toLowerCase(), pt=tr.cells[2].textContent;
+      tr.style.display = (!s||nm.includes(s)) && (!p||pt===p) ? '' : 'none';});};
+  q.oninput=filt; pf.onchange=filt;
+  document.querySelectorAll('table').forEach(sortable);
+  tabs();
+}
+render();
+</script>
+</body></html>
