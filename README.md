@@ -57,14 +57,21 @@ transaction-detail layer are excluded from this repo — some for size (the deta
 ~150MB gzipped), some because they're the output of a run rather than source. All of it
 lives in Box; each pipeline's own README documents exactly what it produces and where.
 
-## Known gap
+## Pipeline completeness
 
-`contributions/pipeline/` currently ships six of the seven scripts referenced in the
-contributions READMEs (`build.py`, `classify.py`, `resolve.py`, `workbook.py`,
-`crosswalk.py`, `politician_report.py`). `sponsors.py` and `chains.py` — the fourth layer
-that produces the PAC funding-chain trace (`pac_funding_sources.csv`, `ultimate_sources.csv`,
-`sponsor_detail.csv`) — were not in the archived pipeline bundle this repo was built from and
-still need to be pulled in.
+`contributions/pipeline/` ships all seven scripts referenced in the contributions READMEs:
+`build.py`, `classify.py`, `resolve.py`, `workbook.py`, `crosswalk.py`,
+`politician_report.py`, and — as of 2026-09-09 — `sponsors.py` and `chains.py`, the fourth
+layer that produces the PAC funding-chain trace (`pac_funding_sources.csv`,
+`ultimate_sources.csv`, `sponsor_detail.csv`). See `contributions/README_pac_sponsor_tracing.md`
+for the method and a real validation run against live FEC and Philadelphia data.
+
+**Environment note.** Claude's cloud sandbox can reach the FEC's bulk-download endpoints and
+Philadelphia's Carto SQL API directly, but PA's own campaign-finance site
+(`campaignfinanceonline.pa.gov`) returns `403` to it — the same bot-protection pattern
+already documented for `palegis.us` in the LT-04 build. A full `sponsors.py` / `chains.py`
+run (all three jurisdictions) needs to happen wherever `build.py` itself already runs today;
+from Claude's sandbox alone, only the FEC and Philadelphia slices are reachable.
 
 ## Status
 
