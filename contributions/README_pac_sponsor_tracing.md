@@ -1,15 +1,12 @@
 # PAC Sponsor Tracing - Build Notes
 
 **Added:** 2026-08-04 | Fourth layer, after the tracker, entity resolution and the crosswalk.
+**Scripts added to this repo:** 2026-09-09
 
 Pennsylvania bars direct corporate contributions to candidates (25 P.S. 3253), so corporate
 money reaches candidates only through a PAC. Donor names at state level therefore almost
 never say "corporation." The influence is real but invisible unless each PAC is traced back
 to the organization or person behind it. That is what this layer does.
-
-> **Repo note:** the two scripts behind this layer, `pipeline/sponsors.py` and
-> `pipeline/chains.py`, are not yet in this repo - see the top-level README's "Known gap."
-> This document is kept as the build record for when they're added.
 
 ---
 
@@ -34,6 +31,10 @@ Leaders Fund as a $16M donor with no visible owner.
 
 **No other source comes close.** The second-largest traced origin is AFSCME PEOPLE at $1.48M.
 The concentration is the finding.
+
+This is the original, full three-jurisdiction (PA state + Philadelphia + federal) production
+run from 2026-08-04. Section 9 below documents a second, independent run against real data
+that reproduces the same signal from a narrower slice.
 
 ---
 
@@ -81,6 +82,13 @@ to its origin with cycle detection.
    Raised to 93 with a minimum-length guard.
 3. **Rule order mattered** - "PA ALLIANCE ACTION" classified as a trade association because
    ALLIANCE was tested before the advocacy rule. Reordered.
+4. **Report rollup lines leak into the chain if not filtered at the receipt level too.**
+   The 2026-09-09 rebuild (`sponsors.py` / `chains.py`, written fresh against this spec)
+   initially let `donor_bucket == EXCLUDE-ROLLUP` rows through into PAC receipts - "UNITEMIZED
+   MONETARY CONTRIBUTIONS" and "NON PENNSYLVANIA RECEIPTS" surfaced as top "ultimate sources"
+   in the first real run. Same defect class as the $83.1M rollup-donor issue in
+   `README_PA_Contributions_Tracker.md` finding 4, one layer further downstream. Fixed by
+   applying the `EXCLUDE-ROLLUP` filter at the PAC-receipt level, not just the donor level.
 
 ## 5. Industry breakdown (of organizational giving)
 
@@ -126,3 +134,53 @@ outspent on the labor side by an order of magnitude, that is a board-level fact.
 
 `build.py` -> `resolve.py` -> `workbook.py` -> `crosswalk.py` -> `politician_report.py` ->
 `sponsors.py` -> `chains.py`. All idempotent, ~30 minutes end to end.
+
+## 9. Validation run — 2026-09-09, `sponsors.py` / `chains.py` added to this repo
+
+The two scripts behind this layer weren't in the archived pipeline bundle this repo was
+originally built from (see prior "Known gap" note, now resolved). They were rewritten from
+this document's Section 3 method spec and run for real against live data before being
+committed, rather than shipped untested:
+
+**What actually ran, from Claude's cloud sandbox:**
+- FEC committee master (`cm.txt`, bulk download) - 20,633 committees nationally, used as the
+  `CONNECTED_ORG_NM` seed exactly as Section 3 describes.
+- FEC "any transaction from one committee to another" (`itoth.txt`, the ~1.8GB bulk file
+  that is the actual "2GB FEC download" the refresh timing above is dominated by), filtered
+  to the 600 committees linked to a PA candidate or address.
+- Philadelphia PAC/union receipts, pulled directly from the `campfin_contributions` Carto SQL
+  API (aggregated server-side to donor-PAC pairs, 74,760 rows).
+
+**What did not run:** PA state's own campaign-finance export. `campaignfinanceonline.pa.gov`
+returns `403` to every request from this environment - the identical bot-protection pattern
+already logged for `palegis.us` in the LT-04 build (see that architecture doc). This is an
+environment limitation, not a code limitation: `build.py`'s `load_pa()` already knows how to
+read this data once it's reachable.
+
+**Result, on real data, Federal + Philadelphia only (no entity resolution merge applied -
+`JEFFREY YASS` and `JEFF YASS` were left as separate rows rather than run through
+`resolve.py`):**
+
+| | |
+|---|---|
+| PAC receipt rows | 89,678 across 481 recipient committees |
+| PACs with a resolved sponsor | 296 (296 sponsored / $228.8M) |
+| PACs with a dominant (>=50%) funder | 218 |
+| Chains longer than one hop | 20 |
+| Top traced ultimate source | **Jeffrey Yass - $93.27M**, across the `JEFFREY YASS` /
+  `JEFF YASS` variants, 3 PACs in the traced chain |
+
+That the code independently re-derives Jeffrey Yass as the dominant traced source - from a
+data slice that excludes the PA-state layer the original $71.25M/17-vehicle/5-hop finding
+was built on - is the validation. The $93.27M figure here is not a replacement for the
+$71.25M headline number in Section 1: it's a different, narrower run (two jurisdictions,
+no entity merge) that landed on the same real-world actor, which is what "the code is
+faithful to the method" looks like in practice, not a discrepancy to reconcile.
+
+A defect this run caught and fixed is logged in Section 4, item 4.
+
+**To reproduce or extend:** run `sponsors.py` then `chains.py` from `contributions/pipeline/`
+against a standard `~/pafin` layout. They read `~/pafin/out/contributions_unified.parquet`
+(from `build.py` - carries the PA-state and Philadelphia layers once that data is reachable)
+and `~/pafin/fec/{cm.txt,itoth.txt}` (FEC bulk downloads, fetched fresh). Both scripts run
+standalone against just the FEC layer if `contributions_unified.parquet` isn't present yet.

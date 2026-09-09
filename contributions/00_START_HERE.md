@@ -116,8 +116,8 @@ pipeline as permanent keys.
    industry, but some is genuinely untagged.
 5. Extend federal coverage to prior cycles.
 
-*Note: this repo ships `pipeline/build.py`, `classify.py`, `resolve.py`, `workbook.py`,
-`crosswalk.py` and `politician_report.py`. `sponsors.py` and `chains.py` (the layer behind
-`pac_funding_sources.csv` / `ultimate_sources.csv` / `sponsor_detail.csv`) were not in the
-archived pipeline bundle this repo was built from and still need to be added - see the
-top-level README's "Known gap".*
+*Note: this repo now ships all seven pipeline scripts, including `sponsors.py` and
+`chains.py` (added 2026-09-09) - see `README_pac_sponsor_tracing.md` for the method and a
+validation run against live FEC and Philadelphia data. PA state's own export site blocks
+Claude's cloud sandbox (see the top-level README's "Environment note"), so a full
+three-jurisdiction run still needs to happen wherever `build.py` already runs today.*
